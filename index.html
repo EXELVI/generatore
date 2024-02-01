@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore di Numeri Casuali</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="impostazioniDropdown"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-gear"></i>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="impostazioniDropdown">
+            <li><button class="dropdown-item" onclick="cambiaTema()">Cambia tema</button></li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li><button class="dropdown-item" onclick="resetlocal()">Resetta localStorage</button></li>
+        </ul>
+    </div>
+    <h1 class="text-center">Generatore di Numeri Casuali</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <label for="quantitaNumeri">Quantità di Numeri:</label>
+            <input type="number" id="quantitaNumeri" class="form-control" min="1" value="5">
+            <label for="minimo">Da:</label>
+            <input type="number" id="minimo" class="form-control" placeholder="Da" value="1">
+            <label for="maksim">A:</label>
+            <input type="number" id="maksim" class="form-control" placeholder="A" value="29">
+            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#escludiNumeroModal">Escludi
+                Numero</button>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-6">
+            <button class="btn btn-primary" onclick="generaNumerettibelli()">Genera Numeri</button>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-6">
+            <h3>Numeri Generati:</h3>
+            <ul id="numerini" class="list-group"></ul>
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="escludiNumeroModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Escludi Numero</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="number" id="numeronibrutti" class="form-control"
+                        placeholder="Inserisci il numero da escludere">
+                    </br>
+                    <h3>Numeri Esclusi:</h3>
+                    <div id="numeriBruttibruttiLista" class="d-flex flex-wrap gap-2"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                    <button type="button" class="btn btn-primary" onclick="aggiunginumeronibrutti()">Aggiungi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <script>
+        var numeriCattivi = [];
+
+
+
+
+        function generaNumerettibelli() {
+            var quantitaNumeri = document.getElementById('quantitaNumeri').value;
+            var minimo = parseInt(document.getElementById('minimo').value);
+            var maksim = parseInt(document.getElementById('maksim').value);
+            var numerini = document.getElementById('numerini');
+
+            numerini.innerHTML = '';
+
+            if (((maksim - minimo + 1) - numeriCattivi.length) < quantitaNumeri) {
+                alert("L'intervallo tra il massimo e il minimo non è sufficiente per generare la quantità richiesta di numeri.");
+                return;
+            }
+
+            var numeriGenerati = [];
+
+            for (var i = 0; i < quantitaNumeri; i++) {
+                var numeroCasuale;
+                do {
+                    numeroCasuale = Math.floor(Math.random() * (maksim - minimo + 1)) + minimo;
+                } while (numeriGenerati.includes(numeroCasuale) || numeriCattivi.includes(numeroCasuale));
+
+                numeriGenerati.push(numeroCasuale);
+
+                var listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.appendChild(document.createTextNode(numeroCasuale));
+                numerini.appendChild(listItem);
+            }
+            localStorage.setItem('quantitaNumeri', quantitaNumeri);
+            localStorage.setItem('minimo', minimo);
+            localStorage.setItem('massimo', maksim);
+            localStorage.setItem('numeriEsclusi', JSON.stringify(numeriCattivi));
+        }
+
+        function aggiunginumeronibrutti() {
+            var numeronibrutti = parseInt(document.getElementById('numeronibrutti').value);
+
+            if (!numeriCattivi.includes(numeronibrutti)) {
+                numeriCattivi.push(numeronibrutti);
+
+                var numeriBruttibruttiLista = document.getElementById('numeriBruttibruttiLista');
+                var badge = document.createElement('span');
+                badge.className = 'badge d-flex align-items-center p-1 pe-2 text-danger-emphasis bg-danger-subtle border border-danger-subtle rounded-pill';
+                badge.innerHTML = numeronibrutti + '<span class="vr mx-2"></span><a href="#" onclick="rimuovinumeronibrutti(' + numeronibrutti + ')"><svg class="bi" width="16" height="16"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#8B0000" class="bi bi-x-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/></svg></svg></a>';
+
+                numeriBruttibruttiLista.appendChild(badge);
+                document.getElementById('numeronibrutti').value = '';
+            } else {
+                alert("Questo numero è già stato escluso.");
+            }
+        }
+        function visualizzaNumeriEsclusi() {
+            var numeriBruttibruttiLista = document.getElementById('numeriBruttibruttiLista');
+            numeriBruttibruttiLista.innerHTML = '';
+
+            for (var i = 0; i < numeriCattivi.length; i++) {
+                var badge = document.createElement('span');
+                badge.className = 'badge d-flex align-items-center p-1 pe-2 text-danger-emphasis bg-danger-subtle border border-danger-subtle rounded-pill';
+                badge.innerHTML = numeriCattivi[i] + '<span class="vr mx-2"></span><a href="#" onclick="rimuovinumeronibrutti(' + numeriCattivi[i] + ')"><svg class="bi" width="16" height="16"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#8B0000" class="bi bi-x-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/></svg></svg></a>';
+                numeriBruttibruttiLista.appendChild(badge);
+            }
+        }
+
+        function rimuovinumeronibrutti(numero) {
+            var indexxxxx = numeriCattivi.indexOf(numero);
+            if (indexxxxx !== -1) {
+                numeriCattivi.splice(indexxxxx, 1);
+                document.getElementById('numeriBruttibruttiLista').removeChild(document.getElementById('numeriBruttibruttiLista').childNodes[indexxxxx]);
+            }
+        }
+
+        function cambiaTema(tipoTema) {
+            if (!tipoTema) {
+                var temaaaStorage = localStorage.getItem('tema');
+                if (temaaaStorage != "dark") {
+                    document.body.setAttribute('data-bs-theme', "dark");
+                    localStorage.setItem('tema', "dark");
+                }
+                else {
+                    document.body.setAttribute('data-bs-theme', "light");
+                    localStorage.setItem('tema', "light")
+                }
+            } else if (tipoTema === 'dark' || tipoTema === 'light') {
+                document.body.setAttribute('data-bs-theme', tipoTema);
+                localStorage.setItem('tema', tipoTema);
+            }
+        }
+
+        function resetlocal() {
+            var confermaaa = window.confirm("Sei sicuro di voler resettare la local? (Questo eliminerà tutti i tuoi valori salvati)");
+            if (confermaaa) {
+                localStorage.clear();
+                alert('LocalStorage ripristinata con successo!');
+                window.location.reload()
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var temaSalvato = localStorage.getItem('tema');
+            if (temaSalvato) {
+                cambiaTema(temaSalvato);
+            }
+            var quantitaSalvata = localStorage.getItem('quantitaNumeri');
+            var minimoSalvato = localStorage.getItem('minimo');
+            var massimoSalvato = localStorage.getItem('massimo');
+            var numeriEsclusiSalvati = JSON.parse(localStorage.getItem('numeriEsclusi'));
+
+            if (quantitaSalvata) {
+                document.getElementById('quantitaNumeri').value = quantitaSalvata;
+            }
+            if (minimoSalvato) {
+                document.getElementById('minimo').value = minimoSalvato;
+            }
+            if (massimoSalvato) {
+                document.getElementById('maksim').value = massimoSalvato;
+            }
+            if (numeriEsclusiSalvati) {
+                numeriCattivi = numeriEsclusiSalvati;
+                visualizzaNumeriEsclusi();
+            }
+        });
+
+    </script>
+    <!-- Ciao, se stai guardando questo codice ti dico solo che non avevo idee per le variabili :) -->
+    <!-- 
+    Questo codice è stato creato da EXELVI per un piccolo progetto scolastico. 
+    Sei libero di utilizzarlo e modificarlo per i tuoi progetti, 
+    ma ti chiedo cortesemente di riconoscere il mio contributo includendo il mio nome o link a github nella documentazione o direttamente nel codice. Grazie
+    Github: https://github.com/EXELVI
+    -->
+
+</body>
+
+</html>
