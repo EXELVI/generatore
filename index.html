@@ -49,12 +49,14 @@
             data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-gear"></i>
         </button>
-        <ul class="dropdown-menu" aria-labelledby="impostazioniDropdown">
-            <li><button class="dropdown-item" onclick="cambiaTema()">Cambia tema</button></li>
+        <ul class="dropdown-menu mx-0 border-0 shadow w-220px" aria-labelledby="impostazioniDropdown">
+            <li><button class="dropdown-item d-flex gap-2 align-items-center" onclick="cambiaTema()"><i id="itemTema"
+                        class="bi bi-sun-fill"></i> Cambia tema</button></li>
             <li>
                 <hr class="dropdown-divider">
             </li>
-            <li><button class="dropdown-item" onclick="resetlocal()">Resetta localStorage</button></li>
+            <li><button class="dropdown-item d-flex gap-2 align-items-center" onclick="resetlocal()"><i
+                        class="bi bi-eraser-fill"></i> Resetta localStorage</button></li>
         </ul>
     </div>
     <h1 class="text-center">Generatore di Numeri Casuali</h1>
@@ -111,7 +113,9 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(salvataggioCorrente)"><i class="bi bi-download"></i> Salva nel salvataggio corrente</button>
+                    <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(salvataggioCorrente)"><i
+                            class="bi bi-download"></i> Salva nel salvataggio <strong
+                            id="salvataggiotestotototo"></strong></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
@@ -263,6 +267,9 @@
             }
             delete salvataggi[save]
             localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
+            if (Object.keys(JSON.parse(localStorage.getItem("numeriEsclusiNew"))).length == 0) {
+                localStorage.setItem("selectedSave", "")
+            }
             window.location.reload()
         }
 
@@ -280,14 +287,17 @@
         }
 
         function cambiaTema(tipoTema) {
+            var itemTema = document.getElementById("itemTema")
             if (!tipoTema) {
                 var temaaaStorage = localStorage.getItem('tema');
                 if (temaaaStorage != "dark") {
                     document.body.setAttribute('data-bs-theme', "dark");
+                    itemTema.className = "bi bi-sun-fill"
                     localStorage.setItem('tema', "dark");
                 }
                 else {
                     document.body.setAttribute('data-bs-theme', "light");
+                    itemTema.className = "bi bi-moon-stars-fill"
                     localStorage.setItem('tema', "light")
                 }
             } else if (tipoTema === 'dark' || tipoTema === 'light') {
@@ -321,6 +331,7 @@
             }
             var numeriEsclusiSalvati = JSON.parse(localStorage.getItem('numeriEsclusiNew'));
             var selectedSave = localStorage.getItem('selectedSave');
+            var salvataggiotestotototo = document.getElementById('salvataggiotestotototo');
             if (quantitaSalvata) {
                 document.getElementById('quantitaNumeri').value = quantitaSalvata;
             }
@@ -334,6 +345,7 @@
                 salvataggi = numeriEsclusiSalvati
                 if (selectedSave) {
                     salvataggioCorrente = selectedSave
+                    salvataggiotestotototo.innerHTML = salvataggioCorrente
                     numeriCattivi = numeriEsclusiSalvati[selectedSave];
                     visualizzaNumeriEsclusi();
                 }
