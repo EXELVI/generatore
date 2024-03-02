@@ -192,7 +192,6 @@
             localStorage.setItem('quantitaNumeri', quantitaNumeri);
             localStorage.setItem('minimo', minimo);
             localStorage.setItem('massimo', maksim);
-            localStorage.setItem('numeriEsclusi', JSON.stringify(numeriCattivi));
         }
 
         function aggiunginumeronibrutti() {
@@ -236,19 +235,20 @@
                 var listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.appendChild(document.createTextNode(keys[i]));
-                listItem.innerHTML = '<a href="#" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + (questo ? "<strong>" : "") + listItem.innerHTML +  (questo ? "</strong>" : "") + ' <button type="button" class="btn btn-primary  float-end" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i class="bi bi-upload"></i> Carica</button>'
+                listItem.innerHTML = '<a href="#" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + (questo ? "<strong>" : "") + listItem.innerHTML + (questo ? "</strong>" : "") + '<div class="float-end"><button type="button" class="btn btn-primary" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i class="bi bi-upload"></i> Carica</button> <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(\'' + keys[i] + '\')"><i class="bi bi-download"></i> Salva</button></div>'
                 salvataggiLista.appendChild(listItem);
 
             }
 
         }
 
-        function salvaSalvataggio() {
-            var nomeSalvataggio = document.getElementById('nomeSalvataggio').value;
+        function salvaSalvataggio(salvataggio) {
+            var nomeSalvataggio = salvataggio || document.getElementById('nomeSalvataggio').value;
             if (!nomeSalvataggio) return alert("Inserisci un nome!")
             salvataggi[nomeSalvataggio] = numeriCattivi
             localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
             window.location.reload()
+
         }
 
         function rimuoviSalvattaggio(save) {
@@ -324,13 +324,14 @@
             if (massimoSalvato) {
                 document.getElementById('maksim').value = massimoSalvato;
             }
-            if (numeriEsclusiSalvati && selectedSave) {
+            if (numeriEsclusiSalvati) {
                 salvataggi = numeriEsclusiSalvati
-                salvataggioCorrente = selectedSave
+                if (selectedSave) {
+                    salvataggioCorrente = selectedSave
+                    numeriCattivi = numeriEsclusiSalvati[selectedSave];
+                    visualizzaNumeriEsclusi();
+                }
                 visualizzaSalvataggi()
-                numeriCattivi = numeriEsclusiSalvati[selectedSave];
-                visualizzaNumeriEsclusi();
-
             }
         });
 
