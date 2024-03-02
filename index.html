@@ -259,7 +259,7 @@
 
         function rimuoviSalvattaggio(save) {
             if (localStorage.getItem("selectedSave") == save) {
-                localStorage.setItem("selectedSave", salvataggi.first())
+                localStorage.setItem("selectedSave", Object.keys(salvataggi)[0])
             }
             delete salvataggi[save]
             localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
