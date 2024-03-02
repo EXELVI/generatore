@@ -55,7 +55,7 @@
             <li>
                 <hr class="dropdown-divider">
             </li>
-            <li><button class="dropdown-item d-flex gap-2 align-items-center" onclick="resetlocal()"><i
+            <li><button class="dropdown-item d-flex gap-2 align-items-center text-danger" onclick="resetlocal()"><i
                         class="bi bi-eraser-fill"></i> Resetta localStorage</button></li>
         </ul>
     </div>
@@ -307,7 +307,7 @@
         }
 
         function resetlocal() {
-            var confermaaa = window.confirm("Sei sicuro di voler resettare la local? (Questo eliminerà tutti i tuoi valori salvati)");
+            var confermaaa = window.confirm("Sei sicuro di voler resettare la local? (Questo eliminerà tutte le impostazioni salvate, compresi i salvataggi)");
             if (confermaaa) {
                 localStorage.clear();
                 alert('LocalStorage ripristinata con successo!');
