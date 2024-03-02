@@ -155,7 +155,9 @@
 
     <script>
         var numeriCattivi = [],
-            salvataggi = {};
+            salvataggi = {},
+            salvataggioCorrente = "";
+
 
         function generaNumerettibelli() {
             var quantitaNumeri = document.getElementById('quantitaNumeri').value;
@@ -230,11 +232,11 @@
             salvataggiLista.innerHTML = '';
             var keys = Object.keys(salvataggi)
             for (var i = 0; i < keys.length; i++) {
-
+                var questo = salvataggioCorrente == keys[i]
                 var listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.appendChild(document.createTextNode(keys[i]));
-                listItem.innerHTML = '<a href="#" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + listItem.innerHTML + ' <button type="button" class="btn btn-primary  float-end" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i class="bi bi-upload"></i> Carica</button>'
+                listItem.innerHTML = '<a href="#" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + (questo ? "<strong>" : "") + listItem.innerHTML +  (questo ? "</strong>" : "") + ' <button type="button" class="btn btn-primary  float-end" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i class="bi bi-upload"></i> Carica</button>'
                 salvataggiLista.appendChild(listItem);
 
             }
@@ -324,6 +326,7 @@
             }
             if (numeriEsclusiSalvati && selectedSave) {
                 salvataggi = numeriEsclusiSalvati
+                salvataggioCorrente = selectedSave
                 visualizzaSalvataggi()
                 numeriCattivi = numeriEsclusiSalvati[selectedSave];
                 visualizzaNumeriEsclusi();
