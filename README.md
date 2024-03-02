@@ -23,6 +23,6 @@ Il generatore consente di selezionare la quantità di numeri da generare, l'inte
 
 Se desideri contribuire, fai pure! Apri un issue o una pull request.
 
-## Autori
+## Contributori
 
-- [EXELVI](https://github.com/EXELVI)
+

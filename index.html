@@ -161,7 +161,7 @@
     <script>
         var numeriCattivi = [],
             salvataggi = {},
-            salvataggioCorrente = "Salvataggio 1";
+            salvataggioCorrente = "";
 
 
         function generaNumerettibelli() {
@@ -252,6 +252,7 @@
             if (!nomeSalvataggio) return alert("Inserisci un nome!")
             salvataggi[nomeSalvataggio] = numeriCattivi
             localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
+            localStorage.setItem("selectedSave", nomeSalvataggio)
             window.location.reload()
 
         }
