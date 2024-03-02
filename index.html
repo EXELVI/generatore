@@ -36,8 +36,9 @@
             y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
         })(window, document, "clarity", "script", "kw5h4v8a6d");
     </script>
-    
+
     <!--Ho usato bootstrap per lo style-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
@@ -65,15 +66,19 @@
             <label for="minimo">Da:</label>
             <input type="number" id="minimo" class="form-control" placeholder="Da" value="1">
             <label for="maksim">A:</label>
-            <input type="number" id="maksim" class="form-control" placeholder="A" value="29">
-            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#escludiNumeroModal">Escludi
+            <input type="number" id="maksim" class="form-control" placeholder="A" value="28">
+            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#escludiNumeroModal"><i
+                    class="bi bi-x-circle"></i> Escludi
                 Numero</button>
+            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#saveModal"><i
+                    class="bi bi-floppy"></i> Salva</button>
         </div>
     </div>
 
     <div class="row justify-content-center mt-3">
         <div class="col-md-6">
-            <button class="btn btn-primary" onclick="generaNumerettibelli()">Genera Numeri</button>
+            <button class="btn btn-primary" onclick="generaNumerettibelli()"><i class="bi bi-arrow-clockwise"></i>
+                Genera Numeri</button>
         </div>
     </div>
 
@@ -85,12 +90,12 @@
     </div>
     </div>
 
-    <div class="modal fade" id="escludiNumeroModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="escludiNumeroModal" tabindex="-1" aria-labelledby="escludiNumeroModal"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Escludi Numero</h5>
+                    <h5 class="modal-title" id="escludiNumeroModalLabel">Escludi Numero</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -104,6 +109,32 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                     <button type="button" class="btn btn-primary" onclick="aggiunginumeronibrutti()">Aggiungi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveModalLabel">Salvataggi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="nomeSalvataggio" class="form-control"
+                        placeholder="Inserisci nome salvataggio">
+                    </br>
+                    <button type="button" class="btn btn-primary" onclick="salvaSalvataggio()">Salva</button>
+                    </br>
+                    </br>
+                    <h3>Salvataggi:</h3>
+                    <ul id="salvataggiLista" class="list-group"></ul>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
         </div>
@@ -123,13 +154,16 @@
     -->
 
     <script>
-        var numeriCattivi = [];
+        var numeriCattivi = [],
+            salvataggi = {};
 
         function generaNumerettibelli() {
             var quantitaNumeri = document.getElementById('quantitaNumeri').value;
             var minimo = parseInt(document.getElementById('minimo').value);
             var maksim = parseInt(document.getElementById('maksim').value);
             var numerini = document.getElementById('numerini');
+
+            if (!minimo || !maksim || !quantitaNumeri) return alert("Inserisci tutti i valori!")
 
             numerini.innerHTML = '';
 
@@ -168,7 +202,7 @@
                 var numeriBruttibruttiLista = document.getElementById('numeriBruttibruttiLista');
                 var badge = document.createElement('span');
                 badge.className = 'badge d-flex align-items-center p-1 pe-2 text-danger-emphasis bg-danger-subtle border border-danger-subtle rounded-pill';
-                badge.innerHTML = numeronibrutti + '<span class="vr mx-2"></span><a href="#" onclick="rimuovinumeronibrutti(' + numeronibrutti + ')"><svg class="bi" width="16" height="16"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#8B0000" class="bi bi-x-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/></svg></svg></a>';
+                badge.innerHTML = numeronibrutti + '<span class="vr mx-2"></span><a href="#" onclick="rimuovinumeronibrutti(' + numeronibrutti + ')"><i class="bi bi-x-circle-fill text-danger"></i></a>';
 
                 numeriBruttibruttiLista.appendChild(badge);
                 document.getElementById('numeronibrutti').value = '';
@@ -183,9 +217,48 @@
             for (var i = 0; i < numeriCattivi.length; i++) {
                 var badge = document.createElement('span');
                 badge.className = 'badge d-flex align-items-center p-1 pe-2 text-danger-emphasis bg-danger-subtle border border-danger-subtle rounded-pill';
-                badge.innerHTML = numeriCattivi[i] + '<span class="vr mx-2"></span><a href="#" onclick="rimuovinumeronibrutti(' + numeriCattivi[i] + ')"><svg class="bi" width="16" height="16"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#8B0000" class="bi bi-x-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/></svg></svg></a>';
+                badge.innerHTML = numeriCattivi[i] + '<span class="vr mx-2"></span><a href="#" onclick="rimuovinumeronibrutti(' + numeriCattivi[i] + ')"><i class="bi bi-x-circle-fill text-danger"></i></a>';
                 numeriBruttibruttiLista.appendChild(badge);
             }
+        }
+
+        function visualizzaSalvataggi() {
+            var salvataggiLista = document.getElementById('salvataggiLista');
+
+            salvataggiLista.innerHTML = '';
+            var keys = Object.keys(salvataggi)
+            for (var i = 0; i < keys.length; i++) {
+
+                var listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.appendChild(document.createTextNode(keys[i]));
+                listItem.innerHTML = '<a href="#" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + listItem.innerHTML + ' <button type="button" class="btn btn-primary  float-end" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i class="bi bi-upload"></i> Carica</button>'
+                salvataggiLista.appendChild(listItem);
+
+            }
+
+        }
+
+        function salvaSalvataggio() {
+            var nomeSalvataggio = document.getElementById('nomeSalvataggio').value;
+            if (!nomeSalvataggio) return alert("Inserisci un nome!")
+            salvataggi[nomeSalvataggio] = numeriCattivi
+            localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
+            window.location.reload()
+        }
+
+        function rimuoviSalvattaggio(save) {
+            if (localStorage.getItem("selectedSave") == save) {
+                localStorage.setItem("selectedSave", salvataggi.first())
+            }
+            delete salvataggi[save]
+            localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
+            window.location.reload()
+        }
+
+        function caricaSalvataggio(save) {
+            localStorage.setItem("selectedSave", save)
+            window.location.reload()
         }
 
         function rimuovinumeronibrutti(numero) {
@@ -230,8 +303,14 @@
             var quantitaSalvata = localStorage.getItem('quantitaNumeri');
             var minimoSalvato = localStorage.getItem('minimo');
             var massimoSalvato = localStorage.getItem('massimo');
-            var numeriEsclusiSalvati = JSON.parse(localStorage.getItem('numeriEsclusi'));
 
+            if (localStorage.getItem('numeriEsclusi')) { // Vecchia versione (unico array) a nuova versione (JSON con più salvataggi)
+                localStorage.setItem('numeriEsclusiNew', JSON.stringify({ "Salvataggio 1": JSON.parse(localStorage.getItem('numeriEsclusi')) }));
+                localStorage.removeItem("numeriEsclusi")
+                localStorage.setItem('selectedSave', "Salvataggio 1");
+            }
+            var numeriEsclusiSalvati = JSON.parse(localStorage.getItem('numeriEsclusiNew'));
+            var selectedSave = localStorage.getItem('selectedSave');
             if (quantitaSalvata) {
                 document.getElementById('quantitaNumeri').value = quantitaSalvata;
             }
@@ -241,9 +320,12 @@
             if (massimoSalvato) {
                 document.getElementById('maksim').value = massimoSalvato;
             }
-            if (numeriEsclusiSalvati) {
-                numeriCattivi = numeriEsclusiSalvati;
+            if (numeriEsclusiSalvati && selectedSave) {
+                salvataggi = numeriEsclusiSalvati
+                visualizzaSalvataggi()
+                numeriCattivi = numeriEsclusiSalvati[selectedSave];
                 visualizzaNumeriEsclusi();
+
             }
         });
 
