@@ -196,6 +196,8 @@
         function aggiunginumeronibrutti() {
             var numeronibrutti = parseInt(document.getElementById('numeronibrutti').value);
 
+            if (!numeronibrutti) return alert("Immetti un numero prima!")
+
             if (!numeriCattivi.includes(numeronibrutti)) {
                 numeriCattivi.push(numeronibrutti);
 
