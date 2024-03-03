@@ -25,4 +25,4 @@ Se desideri contribuire, fai pure! Apri un issue o una pull request.
 
 ## Contributori
 
-
+- [Zenzi0](https://www.instagram.com/zen._.48/)
