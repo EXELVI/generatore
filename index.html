@@ -173,7 +173,7 @@
             var maksim = parseInt(document.getElementById('maksim').value);
             var numerini = document.getElementById('numerini');
 
-            if (!minimo || !maksim || !quantitaNumeri) return alert("Inserisci tutti i valori!")
+            if (minimo == null || maksim == null || quantitaNumeri == null) return alert("Inserisci tutti i valori!")
 
             numerini.innerHTML = '';
 
