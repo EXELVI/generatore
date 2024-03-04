@@ -55,7 +55,7 @@
                 <hr class="dropdown-divider">
             </li>
             <li><button class="dropdown-item d-flex gap-2 align-items-center text-danger" onclick="resetlocal()"><i
-                        class="bi bi-eraser-fill"></i> Resetta localStorage</button></li>
+                        class="bi bi-eraser-fill"></i> Elimina impostazioni</button></li>
         </ul>
     </div>
     <h1 class="text-center">Generatore di Numeri Casuali</h1>
@@ -112,9 +112,9 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(salvataggioCorrente)"><i
-                            class="bi bi-download"></i> Salva nel salvataggio <strong
-                            id="salvataggiotestotototo"></strong></button>
+                    <button type="button" class="btn btn-primary"
+                        onclick="salvaSalvataggio(salvataggioCorrente, true)"><i class="bi bi-download"></i> Salva nel
+                        salvataggio <strong id="salvataggiotestotototo"></strong></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
@@ -250,31 +250,42 @@
 
         }
 
-        function salvaSalvataggio(salvataggio) {
+        function salvaSalvataggio(salvataggio, apriModal) {
             var nomeSalvataggio = salvataggio || document.getElementById('nomeSalvataggio').value;
-            if (!nomeSalvataggio) return alert("Inserisci un nome!")
+            var nomeeeee = document.getElementById('nomeSalvataggio')
+            if (!salvataggio && apriModal) {
+
+                return $("#saveModal").modal("show").then(() => {
+                    nomeeeee.focus()
+
+                })
+
+            }
+            else if (!nomeSalvataggio) return alert("Inserisci un nome!")
+
             salvataggi[nomeSalvataggio] = numeriCattivi
             localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
             localStorage.setItem("selectedSave", nomeSalvataggio)
-            window.location.reload()
+            nomeeeee.value = ""
+            setSettings()
 
         }
 
         function rimuoviSalvattaggio(save) {
+            delete salvataggi[save]
             if (localStorage.getItem("selectedSave") == save) {
                 localStorage.setItem("selectedSave", Object.keys(salvataggi)[0])
             }
-            delete salvataggi[save]
             localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
             if (Object.keys(JSON.parse(localStorage.getItem("numeriEsclusiNew"))).length == 0) {
                 localStorage.setItem("selectedSave", "")
             }
-            window.location.reload()
+            setSettings()
         }
 
         function caricaSalvataggio(save) {
             localStorage.setItem("selectedSave", save)
-            window.location.reload()
+            setSettings()
         }
 
         function rimuovinumeronibrutti(numero) {
@@ -306,7 +317,7 @@
         }
 
         function resetlocal() {
-            var confermaaa = window.confirm("Sei sicuro di voler resettare la local? (Questo eliminerà tutte le impostazioni salvate, compresi i salvataggi)");
+            var confermaaa = window.confirm("Sei sicuro di voler eliminare tutte le impostazioni? (Questo eliminerà tutte le impostazioni salvate, compresi i salvataggi)");
             if (confermaaa) {
                 localStorage.clear();
                 alert('LocalStorage ripristinata con successo!');
@@ -314,7 +325,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        function setSettings() {
             var temaSalvato = localStorage.getItem('tema');
             if (temaSalvato) {
                 cambiaTema(temaSalvato);
@@ -330,7 +341,7 @@
             }
             var numeriEsclusiSalvati = JSON.parse(localStorage.getItem('numeriEsclusiNew'));
             var selectedSave = localStorage.getItem('selectedSave');
-            var salvataggiotestotototo = document.getElementById('salvataggiotestotototo');
+
             if (quantitaSalvata) {
                 document.getElementById('quantitaNumeri').value = quantitaSalvata;
             }
@@ -340,16 +351,22 @@
             if (massimoSalvato) {
                 document.getElementById('maksim').value = massimoSalvato;
             }
+            var salvataggiotestotototo = document.getElementById('salvataggiotestotototo');
+            salvataggiotestotototo.innerHTML = selectedSave
             if (numeriEsclusiSalvati) {
                 salvataggi = numeriEsclusiSalvati
                 if (selectedSave) {
                     salvataggioCorrente = selectedSave
-                    salvataggiotestotototo.innerHTML = salvataggioCorrente
                     numeriCattivi = numeriEsclusiSalvati[selectedSave];
                     visualizzaNumeriEsclusi();
+                } else {
+                    salvataggioCorrente = ""
                 }
                 visualizzaSalvataggi()
             }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            setSettings()
         });
 
     </script>
