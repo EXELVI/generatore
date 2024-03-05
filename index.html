@@ -162,9 +162,13 @@
     -->
 
     <script>
+        function checkVuota(n) {
+            return (n === undefined || n === null || n === "") 
+        }
         var numeriCattivi = [],
             salvataggi = {},
-            salvataggioCorrente = "";
+            salvataggioCorrente = "",
+            salvataggiSettings = {};
 
 
         function generaNumerettibelli() {
@@ -173,7 +177,7 @@
             var maksim = parseInt(document.getElementById('maksim').value);
             var numerini = document.getElementById('numerini');
 
-            if (minimo == null || maksim == null || quantitaNumeri == null) return alert("Inserisci tutti i valori!")
+            if (checkVuota(minimo) || checkVuota(maksim) || checkVuota(quantitaNumeri)) return alert("Inserisci tutti i valori!")
 
             numerini.innerHTML = '';
 
@@ -197,15 +201,17 @@
                 listItem.appendChild(document.createTextNode(numeroCasuale));
                 numerini.appendChild(listItem);
             }
-            localStorage.setItem('quantitaNumeri', quantitaNumeri);
-            localStorage.setItem('minimo', minimo);
-            localStorage.setItem('massimo', maksim);
+          if (salvataggioCorrente) {
+            salvataggiSettings[salvataggioCorrente] = { quantitaNumeri: quantitaNumeri, minimo: minimo, massimo: maksim }
+            localStorage.setItem('settingsNew', JSON.stringify(salvataggiSettings));
+          }
+          
         }
 
         function aggiunginumeronibrutti() {
             var numeronibrutti = parseInt(document.getElementById('numeronibrutti').value);
 
-            if (!numeronibrutti) return alert("Immetti un numero prima!")
+            if (checkVuota(numeronibrutti)) return alert("Immetti un numero prima!")
 
             if (!numeriCattivi.includes(numeronibrutti)) {
                 numeriCattivi.push(numeronibrutti);
@@ -254,12 +260,9 @@
             var nomeSalvataggio = salvataggio || document.getElementById('nomeSalvataggio').value;
             var nomeeeee = document.getElementById('nomeSalvataggio')
             if (!salvataggio && apriModal) {
-
                 return $("#saveModal").modal("show").then(() => {
                     nomeeeee.focus()
-
                 })
-
             }
             else if (!nomeSalvataggio) return alert("Inserisci un nome!")
 
@@ -273,10 +276,12 @@
 
         function rimuoviSalvattaggio(save) {
             delete salvataggi[save]
+            delete salvataggiSettings[save]
             if (localStorage.getItem("selectedSave") == save) {
                 localStorage.setItem("selectedSave", Object.keys(salvataggi)[0])
             }
             localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
+            localStorage.setItem("settingsNew", JSON.stringify(salvataggiSettings))
             if (Object.keys(JSON.parse(localStorage.getItem("numeriEsclusiNew"))).length == 0) {
                 localStorage.setItem("selectedSave", "")
             }
@@ -330,9 +335,7 @@
             if (temaSalvato) {
                 cambiaTema(temaSalvato);
             }
-            var quantitaSalvata = localStorage.getItem('quantitaNumeri');
-            var minimoSalvato = localStorage.getItem('minimo');
-            var massimoSalvato = localStorage.getItem('massimo');
+            var settingsNew = JSON.parse(localStorage.getItem('settingsNew'));
 
             if (localStorage.getItem('numeriEsclusi')) { // Vecchia versione (unico array) a nuova versione (JSON con più salvataggi)
                 localStorage.setItem('numeriEsclusiNew', JSON.stringify({ "Salvataggio 1": JSON.parse(localStorage.getItem('numeriEsclusi')) }));
@@ -341,15 +344,13 @@
             }
             var numeriEsclusiSalvati = JSON.parse(localStorage.getItem('numeriEsclusiNew'));
             var selectedSave = localStorage.getItem('selectedSave');
-
-            if (quantitaSalvata) {
-                document.getElementById('quantitaNumeri').value = quantitaSalvata;
-            }
-            if (minimoSalvato) {
-                document.getElementById('minimo').value = minimoSalvato;
-            }
-            if (massimoSalvato) {
-                document.getElementById('maksim').value = massimoSalvato;
+            if (settingsNew) {
+                salvataggiSettings = settingsNew
+                if (settingsNew[selectedSave]) {
+                    document.getElementById('quantitaNumeri').value = settingsNew[selectedSave]?.quantitaNumeri
+                    document.getElementById('minimo').value = settingsNew[selectedSave]?.minimo
+                    document.getElementById('maksim').value = settingsNew[selectedSave]?.massimo
+                }
             }
             var salvataggiotestotototo = document.getElementById('salvataggiotestotototo');
             salvataggiotestotototo.innerHTML = selectedSave
