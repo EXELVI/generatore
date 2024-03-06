@@ -62,12 +62,20 @@
 
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <label for="quantitaNumeri">Quantità di Numeri:</label>
-            <input type="number" id="quantitaNumeri" class="form-control" min="1" value="5">
-            <label for="minimo">Da:</label>
-            <input type="number" id="minimo" class="form-control" placeholder="Da" value="1">
-            <label for="maksim">A:</label>
-            <input type="number" id="maksim" class="form-control" placeholder="A" value="28">
+            <p class="text-danger" id="valueError" hidden><i class="bi bi-exclamation-circle-fill"></i> Inserisci tutti
+                i valori</p>
+            <div id="quantitaNumeriDiv">
+                <label for="quantitaNumeri">Quantità di Numeri:</label>
+                <input type="number" id="quantitaNumeri" class="form-control" min="1" value="5">
+            </div>
+            <div id="minimoDiv">
+                <label for="minimo">Da:</label>
+                <input type="number" id="minimo" class="form-control" placeholder="Da" value="1">
+            </div>
+            <div id="maksimDiv">
+                <label for="maksim">A:</label>
+                <input type="number" id="maksim" class="form-control" placeholder="A" value="28">
+            </div>
             <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#escludiNumeroModal"><i
                     class="bi bi-x-circle"></i> Escludi
                 Numero</button>
@@ -100,6 +108,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <p class="text-danger" id="escludiError" hidden><i class="bi bi-exclamation-circle-fill"></i>
+                        Inserisci un numero</p>
                     <input type="number" id="numeronibrutti" class="form-control"
                         onkeydown="if(event.key == 'Enter') { event.preventDefault(); aggiunginumeronibrutti(); }"
                         placeholder="Inserisci il numero da escludere">
@@ -130,6 +140,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <p class="text-danger" id="salvaError" hidden><i class="bi bi-exclamation-circle-fill"></i>
+                        Inserisci un nome</p>
                     <input type="text" id="nomeSalvataggio" class="form-control"
                         placeholder="Inserisci nome salvataggio"
                         onkeydown="if(event.key == 'Enter') { event.preventDefault(); salvaSalvataggio(); }">
@@ -163,7 +175,7 @@
 
     <script>
         function checkVuota(n) {
-            return (n === undefined || n === null || n === "") 
+            return (n === undefined || n === null || n === "")
         }
         var numeriCattivi = [],
             salvataggi = {},
@@ -177,13 +189,34 @@
             var maksim = parseInt(document.getElementById('maksim').value);
             var numerini = document.getElementById('numerini');
 
-            if (checkVuota(minimo) || checkVuota(maksim) || checkVuota(quantitaNumeri)) return alert("Inserisci tutti i valori!")
-
+            var quantitaNumeriDiv = document.getElementById('quantitaNumeriDiv')
+            var minimoDiv = document.getElementById('minimoDiv')
+            var maksimDiv = document.getElementById('maksimDiv')
+            if (checkVuota(document.getElementById('minimo').value) || checkVuota(document.getElementById('maksim').value) || checkVuota(quantitaNumeri)) {
+                if (checkVuota(document.getElementById('minimo').value)) {
+                    minimoDiv.className = "text-danger"
+                }
+                if (checkVuota(document.getElementById('maksim').value)) {
+                    maksimDiv.className = "text-danger"
+                }
+                if (checkVuota(quantitaNumeri)) {
+                    quantitaNumeriDiv.className = "text-danger"
+                }
+                document.getElementById("valueError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Inserisci tutti i valori</p>"
+                return document.getElementById("valueError").hidden = false
+            } else {
+                if (!checkVuota(document.getElementById('minimo').value)) minimoDiv.className = ""
+                if (!checkVuota(document.getElementById('maksim').value)) maksimDiv.className = ""
+                if (!checkVuota(quantitaNumeri)) quantitaNumeriDiv.className = ""
+                document.getElementById("valueError").hidden = true
+            }
             numerini.innerHTML = '';
 
             if (((maksim - minimo + 1) - numeriCattivi.length) < quantitaNumeri) {
-                alert("L'intervallo tra il massimo e il minimo non è sufficiente per generare la quantità richiesta di numeri.");
-                return;
+                document.getElementById("valueError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> L'intervallo tra il massimo e il minimo non è sufficiente per generare la quantità richiesta di numeri.</p>"
+                return document.getElementById("valueError").hidden = false
+            } else {
+                document.getElementById("valueError").hidden = true
             }
 
             var numeriGenerati = [];
@@ -201,19 +234,25 @@
                 listItem.appendChild(document.createTextNode(numeroCasuale));
                 numerini.appendChild(listItem);
             }
-          if (salvataggioCorrente) {
-            salvataggiSettings[salvataggioCorrente] = { quantitaNumeri: quantitaNumeri, minimo: minimo, massimo: maksim }
-            localStorage.setItem('settingsNew', JSON.stringify(salvataggiSettings));
-          }
-          
+            if (salvataggioCorrente) {
+                salvataggiSettings[salvataggioCorrente] = { quantitaNumeri: quantitaNumeri, minimo: minimo, massimo: maksim }
+                localStorage.setItem('settingsNew', JSON.stringify(salvataggiSettings));
+            }
+
         }
 
         function aggiunginumeronibrutti() {
             var numeronibrutti = parseInt(document.getElementById('numeronibrutti').value);
 
-            if (checkVuota(numeronibrutti)) return alert("Immetti un numero prima!")
+            if (checkVuota(document.getElementById('numeronibrutti').value)) {
+                document.getElementById("escludiError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Inserisci un numero</p>"
+                return document.getElementById("escludiError").hidden = false
+            } else {
+                document.getElementById("escludiError").hidden = true
+            }
 
             if (!numeriCattivi.includes(numeronibrutti)) {
+                document.getElementById("escludiError").hidden = true
                 numeriCattivi.push(numeronibrutti);
 
                 var numeriBruttibruttiLista = document.getElementById('numeriBruttibruttiLista');
@@ -224,7 +263,8 @@
                 numeriBruttibruttiLista.appendChild(badge);
                 document.getElementById('numeronibrutti').value = '';
             } else {
-                alert("Questo numero è già stato escluso.");
+                document.getElementById("escludiError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Questo numero è già stato escluso</p>"
+                return document.getElementById("escludiError").hidden = false
             }
         }
         function visualizzaNumeriEsclusi() {
@@ -264,7 +304,14 @@
                     nomeeeee.focus()
                 })
             }
-            else if (!nomeSalvataggio) return alert("Inserisci un nome!")
+            else if (!nomeSalvataggio) {
+
+                document.getElementById("salvaError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Inserisci un nome</p>"
+                return document.getElementById("salvaError").hidden = false
+            } else {
+                document.getElementById("salvaError").hidden = true
+
+            }
 
             salvataggi[nomeSalvataggio] = numeriCattivi
             localStorage.setItem("numeriEsclusiNew", JSON.stringify(salvataggi))
