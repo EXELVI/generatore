@@ -26,3 +26,4 @@ Se desideri contribuire, fai pure! Apri un issue o una pull request.
 ## Contributori
 
 - [Zenzi0](https://www.instagram.com/zen._.48/)
+- [artur33](https://github.com/artur3333)
