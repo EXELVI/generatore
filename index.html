@@ -43,21 +43,30 @@
 </head>
 
 <body>
+
+
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="impostazioniDropdown"
             data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-gear"></i>
         </button>
         <ul class="dropdown-menu mx-0 border-0 shadow w-220px" aria-labelledby="impostazioniDropdown">
-            <li><button class="dropdown-item d-flex gap-2 align-items-center" onclick="cambiaTema()"><i id="itemTema"
-                        class="bi bi-sun-fill"></i> Cambia tema</button></li>
+            <li>
+                <button class="dropdown-item d-flex gap-2 align-items-center" onclick="cambiaTema()"><i id="itemTema"
+                        class="bi bi-sun-fill"></i> Cambia tema</button>
+            </li>
             <li>
                 <hr class="dropdown-divider">
             </li>
-            <li><button class="dropdown-item d-flex gap-2 align-items-center text-danger" onclick="resetlocal()"><i
-                        class="bi bi-eraser-fill"></i> Elimina impostazioni</button></li>
+            <li>
+                <button class="dropdown-item d-flex gap-2 align-items-center text-danger" onclick="resetlocal()"><i
+                        class="bi bi-eraser-fill"></i> Elimina impostazioni</button>
+            </li>
         </ul>
+
     </div>
+    <div class="container">
+
     <h1 class="text-center">Generatore di Numeri Casuali</h1>
 
     <div class="row justify-content-center">
@@ -96,6 +105,7 @@
             <h3>Numeri Generati:</h3>
             <ul id="numerini" class="list-group"></ul>
         </div>
+    </div>
     </div>
     </div>
 
@@ -225,7 +235,12 @@
             for (var i = 0; i < quantitaNumeri; i++) {
                 var numeroCasuale;
                 do {
+                    //if (true) { Forse nei prossimi update
+                    //    numeroCasuale = ((Math.random() * (maksim - minimo + 1)).toFixed(2) + minimo).toString()
+                    //    console.log(numeroCasuale)
+                    //} else {
                     numeroCasuale = Math.floor(Math.random() * (maksim - minimo + 1)) + minimo;
+                    // }
                 } while (numeriGenerati.includes(numeroCasuale) || numeriCattivi.includes(numeroCasuale));
 
                 numeriGenerati.push(numeroCasuale);
@@ -325,8 +340,8 @@
                 document.getElementById("salvaicona").className = "bi bi-download"
                 document.getElementById("salvaicona" + salvataggio).className = "bi bi-upload"
             }, 1000)
-            
-    
+
+
 
         }
 
@@ -429,6 +444,8 @@
         document.addEventListener('DOMContentLoaded', function () {
             setSettings()
         });
+
+
 
     </script>
 
