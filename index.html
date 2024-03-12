@@ -44,8 +44,6 @@
 </head>
 
 <body>
-
-
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="impostazioniDropdown"
             data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,8 +62,38 @@
                         class="bi bi-eraser-fill"></i> Elimina impostazioni</button>
             </li>
         </ul>
-
     </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+            <div class="toast-header">
+                <i class="bi bi-exclamation-diamond-fill me-2 text-danger"></i>
+                <strong class="me-auto text-danger">Errore nel codice!</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Si è verificato un errore nel codice!
+                </br>
+                Per favore apri un <a href="https://github.com/EXELVI/generatore/issues/new" target="_blank"
+                    rel="noopener noreferrer">issue su Github</a> riportando i dati qua sotto:
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <div class="codebox border p-3 mb-3">
+                                <pre><code id="code-content">
+                              </code></pre>
+                                <button class="btn btn-primary copy-button" onclick="copyCode()"><i id="bottoneErrorCopia" class="bi bi-clipboard"></i> Copia</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
     <div class="container-fluid">
 
         <h1 class="text-center">Generatore di Numeri Casuali</h1>
@@ -298,9 +326,9 @@
                 numeriBruttibruttiLista.appendChild(badge);
                 document.getElementById('numeronibrutti').value = '';
 
-                
+
                 document.getElementById("botonNumero" + num).className = "bi bi-check2 float-end text-end text-danger"
-                
+
             } else {
                 document.getElementById("escludiError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Questo numero è già stato escluso</p>"
                 return document.getElementById("escludiError").hidden = false
@@ -396,7 +424,20 @@
             if (indexxxxx !== -1) {
                 numeriCattivi.splice(indexxxxx, 1);
                 document.getElementById('numeriBruttibruttiLista').removeChild(document.getElementById('numeriBruttibruttiLista').childNodes[indexxxxx]);
-            } else console.log("Error?")
+            } else {
+                var localStorageData = {};
+                if (localStorage.length > 0) {
+                    for (var i = 0; i < localStorage.length; i++) {
+                        var key = localStorage.key(i);
+                        var value = localStorage.getItem(key);
+                        localStorageData[key] = value;
+                    }
+                }
+                document.getElementById("code-content").innerText = JSON.stringify(localStorageData, null, 3)
+                const errorToast = document.getElementById('errorToast')
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(errorToast)
+                toastBootstrap.show()
+            }
         }
 
         function cambiaTema(tipoTema) {
@@ -468,6 +509,20 @@
             setSettings()
         });
 
+        function copyCode() {
+            const codeContent = document.getElementById('code-content');
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(codeContent);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            selection.removeAllRanges();
+            document.getElementById("bottoneErrorCopia").className = "bi bi-clipboard-check-fill"
+            setTimeout(function () {
+                document.getElementById("bottoneErrorCopia").className = "bi bi-clipboard"
+            }, 1000)
+        }
 
 
     </script>
