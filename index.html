@@ -36,6 +36,7 @@
         })(window, document, "clarity", "script", "kw5h4v8a6d");
     </script>
 
+
     <!--Ho usato bootstrap per lo style-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -67,45 +68,59 @@
     </div>
     <div class="container-fluid">
 
-    <h1 class="text-center">Generatore di Numeri Casuali</h1>
+        <h1 class="text-center">Generatore di Numeri Casuali</h1>
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <p class="text-danger" id="valueError" hidden><i class="bi bi-exclamation-circle-fill"></i> Inserisci tutti
-                i valori</p>
-            <div id="quantitaNumeriDiv">
-                <label for="quantitaNumeri">Quantità di Numeri:</label>
-                <input type="number" id="quantitaNumeri" class="form-control" min="1" value="5">
-            </div>
-            <div id="minimoDiv">
-                <label for="minimo">Da:</label>
-                <input type="number" id="minimo" class="form-control" placeholder="Da" value="1">
-            </div>
-            <div id="maksimDiv">
-                <label for="maksim">A:</label>
-                <input type="number" id="maksim" class="form-control" placeholder="A" value="28">
-            </div>
-            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#escludiNumeroModal"><i
-                    class="bi bi-x-circle"></i> Escludi
-                Numero</button>
-            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#saveModal"><i
-                    class="bi bi-floppy"></i> Salvataggi</button>
-        </div>
-    </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <p class="text-danger" id="valueError" hidden><i class="bi bi-exclamation-circle-fill"></i> Inserisci
+                    tutti
+                    i valori</p>
+                <div id="quantitaNumeriDiv">
+                    <label for="quantitaNumeri">Quantità di Numeri:</label>
+                    <div class="input-group">
+                        <input type="number" id="quantitaNumeri" class="form-control" min="1" value="5">
+                        <span class="input-group-text" onclick="document.getElementById('quantitaNumeri').focus()"><i
+                                class="bi bi-list-ol"></i></span>
+                    </div>
+                </div>
+                <div id="minimoDiv">
+                    <label for="minimo">Da:</label>
+                    <div class="input-group">
+                        <input type="number" id="minimo" class="form-control" placeholder="Da" value="1">
+                        <span class="input-group-text" onclick="document.getElementById('minimo').focus()"><i
+                                class="bi bi-arrow-bar-right"></i></span>
+                    </div>
+                </div>
+                <div id="maksimDiv">
+                    <label for="maksim">A:</label>
+                    <div class="input-group">
+                        <input type="number" id="maksim" class="form-control" placeholder="A" value="28">
+                        <span class="input-group-text" onclick="document.getElementById('maksim').focus()"><i
+                                class="bi bi-arrow-bar-left"></i></span>
+                    </div>
 
-    <div class="row justify-content-center mt-3">
-        <div class="col-md-6">
-            <button class="btn btn-primary" onclick="generaNumerettibelli()"><i class="bi bi-arrow-clockwise"></i>
-                Genera Numeri</button>
+                </div>
+                <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#escludiNumeroModal"><i
+                        class="bi bi-x-circle"></i> Escludi
+                    Numero</button>
+                <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#saveModal"><i
+                        class="bi bi-floppy"></i> Salvataggi</button>
+            </div>
         </div>
-    </div>
 
-    <div class="row justify-content-center mt-3">
-        <div class="col-md-6">
-            <h3>Numeri Generati:</h3>
-            <ul id="numerini" class="list-group"></ul>
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-6">
+                <button class="btn btn-primary" onclick="generaNumerettibelli()"><i class="bi bi-arrow-clockwise"></i>
+                    Genera Numeri</button>
+            </div>
         </div>
-    </div>
+
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-6">
+                <h3>Numeri Generati:</h3>
+                <ul id="numerini" class="list-group"></ul>
+            </div>
+        </div>
     </div>
     </div>
 
@@ -245,9 +260,13 @@
 
                 numeriGenerati.push(numeroCasuale);
 
+
+
+
                 var listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.appendChild(document.createTextNode(numeroCasuale));
+                listItem.innerHTML += '<a href="#" title="Aggiungi ai numeri esclusi" onclick="aggiunginumeronibrutti(' + numeroCasuale + ')" id="botonNumero' + numeroCasuale + '" class="bi bi-x-circle-fill float-end text-end text-danger"></a>'
                 numerini.appendChild(listItem);
             }
             if (salvataggioCorrente) {
@@ -257,10 +276,10 @@
 
         }
 
-        function aggiunginumeronibrutti() {
-            var numeronibrutti = parseInt(document.getElementById('numeronibrutti').value);
+        function aggiunginumeronibrutti(num) {
+            var numeronibrutti = parseInt(document.getElementById('numeronibrutti').value) || num;
 
-            if (checkVuota(document.getElementById('numeronibrutti').value)) {
+            if (!num && checkVuota(document.getElementById('numeronibrutti').value)) {
                 document.getElementById("escludiError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Inserisci un numero</p>"
                 return document.getElementById("escludiError").hidden = false
             } else {
@@ -278,6 +297,10 @@
 
                 numeriBruttibruttiLista.appendChild(badge);
                 document.getElementById('numeronibrutti').value = '';
+
+                
+                document.getElementById("botonNumero" + num).className = "bi bi-check2 float-end text-end text-danger"
+                
             } else {
                 document.getElementById("escludiError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Questo numero è già stato escluso</p>"
                 return document.getElementById("escludiError").hidden = false
@@ -317,7 +340,7 @@
             var nomeeeee = document.getElementById('nomeSalvataggio')
             if (!salvataggio && apriModal) {
                 return $("#saveModal").modal("show").then(() => {
-                    nomeeeee.focus()
+                    document.getElementById('nomeSalvataggio').focus()
                 })
             }
             else if (!nomeSalvataggio) {
@@ -373,7 +396,7 @@
             if (indexxxxx !== -1) {
                 numeriCattivi.splice(indexxxxx, 1);
                 document.getElementById('numeriBruttibruttiLista').removeChild(document.getElementById('numeriBruttibruttiLista').childNodes[indexxxxx]);
-            }
+            } else console.log("Error?")
         }
 
         function cambiaTema(tipoTema) {
