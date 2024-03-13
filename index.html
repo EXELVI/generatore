@@ -47,7 +47,7 @@
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="impostazioniDropdown"
             data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-gear"></i>
+            <i class="bi bi-gear"></i>&#8203;
         </button>
         <ul class="dropdown-menu mx-0 border-0 shadow w-220px" aria-labelledby="impostazioniDropdown">
             <li>
@@ -149,11 +149,10 @@
                 <ul id="numerini" class="list-group"></ul>
             </div>
         </div>
-    </div>
+       
     </div>
 
-    <div class="modal fade" id="escludiNumeroModal" tabindex="-1" aria-labelledby="escludiNumeroModal"
-        aria-hidden="true">
+    <div class="modal fade" id="escludiNumeroModal" tabindex="-1" aria-labelledby="escludiNumeroModal" aria-hidden="true" aria-modal="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -186,7 +185,7 @@
     </div>
 
 
-    <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModal" aria-hidden="true">
+    <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModal" aria-hidden="true" aria-modal="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -294,7 +293,7 @@
                 var listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.appendChild(document.createTextNode(numeroCasuale));
-                listItem.innerHTML += '<a href="#" title="Aggiungi ai numeri esclusi" onclick="aggiunginumeronibrutti(' + numeroCasuale + ')" id="botonNumero' + numeroCasuale + '" class="bi bi-x-circle-fill float-end text-end text-danger"></a>'
+                listItem.innerHTML += '<a href="#" title="Aggiungi/Rimuovi ai numeri esclusi" onclick="toggleNumero(' + numeroCasuale + ')" id="botonNumero' + numeroCasuale + '" class="bi bi-x-circle-fill float-end text-end text-danger"></a>'
                 numerini.appendChild(listItem);
             }
             if (salvataggioCorrente) {
@@ -302,6 +301,11 @@
                 localStorage.setItem('settingsNew', JSON.stringify(salvataggiSettings));
             }
 
+        }
+
+        function toggleNumero(num) {
+            if (numeriCattivi.includes(num)) rimuovinumeronibrutti(num,true)
+            else aggiunginumeronibrutti(num)
         }
 
         function aggiunginumeronibrutti(num) {
@@ -327,7 +331,7 @@
                 document.getElementById('numeronibrutti').value = '';
 
 
-                document.getElementById("botonNumero" + num).className = "bi bi-check2 float-end text-end text-danger"
+                if (num) document.getElementById("botonNumero" + num).className = "bi bi-check2 float-end text-end text-danger"
 
             } else {
                 document.getElementById("escludiError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Questo numero è già stato escluso</p>"
@@ -419,11 +423,12 @@
             }, 1000)
         }
 
-        function rimuovinumeronibrutti(numero) {
+        function rimuovinumeronibrutti(numero, toggle) {
             var indexxxxx = numeriCattivi.indexOf(numero);
             if (indexxxxx !== -1) {
                 numeriCattivi.splice(indexxxxx, 1);
                 document.getElementById('numeriBruttibruttiLista').removeChild(document.getElementById('numeriBruttibruttiLista').childNodes[indexxxxx]);
+                if(toggle)  document.getElementById("botonNumero" + numero).className = "bi bi-x-circle-fill float-end text-end text-danger"
             } else {
                 var localStorageData = {};
                 if (localStorage.length > 0) {
