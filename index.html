@@ -176,8 +176,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary"
                         onclick="salvaSalvataggio(salvataggioCorrente, true)"><i id="salvaicona"
-                            class="bi bi-download"></i> Salva nel
-                        salvataggio <strong id="salvataggiotestotototo"></strong></button>
+                            class="bi bi-download"></i> Registra nel salvataggio <strong id="salvataggiotestotototo"></strong></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
@@ -502,7 +501,7 @@
                 salvataggi = numeriEsclusiSalvati
                 if (selectedSave) {
                     salvataggioCorrente = selectedSave
-                    numeriCattivi = numeriEsclusiSalvati[selectedSave];
+                    numeriCattivi = numeriEsclusiSalvati[selectedSave]; 
                     visualizzaNumeriEsclusi();
                 } else {
                     salvataggioCorrente = ""
