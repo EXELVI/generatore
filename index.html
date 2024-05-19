@@ -65,7 +65,8 @@
     </div>
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-autohide="false">
             <div class="toast-header">
                 <i class="bi bi-exclamation-diamond-fill me-2 text-danger"></i>
                 <strong class="me-auto text-danger">Errore nel codice!</strong>
@@ -83,7 +84,8 @@
                             <div class="codebox border p-3 mb-3">
                                 <pre><code id="code-content">
                               </code></pre>
-                                <button class="btn btn-primary copy-button" onclick="copyCode()"><i id="bottoneErrorCopia" class="bi bi-clipboard"></i> Copia</button>
+                                <button class="btn btn-primary copy-button" onclick="copyCode()"><i
+                                        id="bottoneErrorCopia" class="bi bi-clipboard"></i> Copia</button>
                             </div>
                         </div>
                     </div>
@@ -149,10 +151,11 @@
                 <ul id="numerini" class="list-group"></ul>
             </div>
         </div>
-       
+
     </div>
 
-    <div class="modal fade" id="escludiNumeroModal" tabindex="-1" aria-labelledby="escludiNumeroModal" aria-hidden="true" aria-modal="true">
+    <div class="modal fade" id="escludiNumeroModal" tabindex="-1" aria-labelledby="escludiNumeroModal"
+        aria-hidden="true" aria-modal="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -176,7 +179,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary"
                         onclick="salvaSalvataggio(salvataggioCorrente, true)"><i id="salvaicona"
-                            class="bi bi-download"></i> Registra nel salvataggio <strong id="salvataggiotestotototo"></strong></button>
+                            class="bi bi-download"></i> Registra nel salvataggio <strong
+                            id="salvataggiotestotototo"></strong></button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
@@ -184,7 +188,8 @@
     </div>
 
 
-    <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModal" aria-hidden="true" aria-modal="true">
+    <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModal" aria-hidden="true"
+        aria-modal="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -227,7 +232,7 @@
 
     <script>
         function checkVuota(n) {
-            return (n === undefined || n === null || n === "")
+            return (n === undefined || n === null || n === "" || isNaN(n))
         }
         var numeriCattivi = [],
             salvataggi = {},
@@ -303,14 +308,14 @@
         }
 
         function toggleNumero(num) {
-            if (numeriCattivi.includes(num)) rimuovinumeronibrutti(num,true)
+            if (numeriCattivi.includes(num)) rimuovinumeronibrutti(num, true)
             else aggiunginumeronibrutti(num)
         }
 
         function aggiunginumeronibrutti(num) {
-            var numeronibrutti = parseInt(document.getElementById('numeronibrutti').value) || num;
-
-            if (!num && checkVuota(document.getElementById('numeronibrutti').value)) {
+            var numeronibrutti = parseInt(document.getElementById('numeronibrutti').value)
+            if (num) numeronibrutti = num;
+            if (!num && checkVuota(parseInt(document.getElementById('numeronibrutti').value))) {
                 document.getElementById("escludiError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Inserisci un numero</p>"
                 return document.getElementById("escludiError").hidden = false
             } else {
@@ -370,9 +375,9 @@
             var nomeSalvataggio = salvataggio || document.getElementById('nomeSalvataggio').value;
             var nomeeeee = document.getElementById('nomeSalvataggio')
             if (!salvataggio && apriModal) {
-                return $("#saveModal").modal("show").then(() => {
-                    document.getElementById('nomeSalvataggio').focus()
-                })
+                $("#saveModal").modal("show")
+                return document.getElementById('nomeSalvataggio').focus()
+
             }
             else if (!nomeSalvataggio) {
 
@@ -389,10 +394,10 @@
             nomeeeee.value = ""
             setSettings()
             document.getElementById("salvaicona").className = "bi bi-check2"
-            document.getElementById("salvaicona" + salvataggio).className = "bi bi-check2"
+            if (salvataggio) document.getElementById("salvaicona" + salvataggio).className = "bi bi-check2"
             setTimeout(function () {
                 document.getElementById("salvaicona").className = "bi bi-download"
-                document.getElementById("salvaicona" + salvataggio).className = "bi bi-upload"
+                if (salvataggio)  document.getElementById("salvaicona" + salvataggio).className = "bi bi-upload"
             }, 1000)
 
 
@@ -427,7 +432,7 @@
             if (indexxxxx !== -1) {
                 numeriCattivi.splice(indexxxxx, 1);
                 document.getElementById('numeriBruttibruttiLista').removeChild(document.getElementById('numeriBruttibruttiLista').childNodes[indexxxxx]);
-                if(toggle)  document.getElementById("botonNumero" + numero).className = "bi bi-x-circle-fill float-end text-end text-danger"
+                if (toggle) document.getElementById("botonNumero" + numero).className = "bi bi-x-circle-fill float-end text-end text-danger"
             } else {
                 var localStorageData = {};
                 if (localStorage.length > 0) {
@@ -501,7 +506,7 @@
                 salvataggi = numeriEsclusiSalvati
                 if (selectedSave) {
                     salvataggioCorrente = selectedSave
-                    numeriCattivi = numeriEsclusiSalvati[selectedSave]; 
+                    numeriCattivi = numeriEsclusiSalvati[selectedSave];
                     visualizzaNumeriEsclusi();
                 } else {
                     salvataggioCorrente = ""
