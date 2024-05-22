@@ -55,6 +55,17 @@
                         class="bi bi-sun-fill"></i> Cambia tema</button>
             </li>
             <li>
+                <a class="dropdown-item">
+                    <div class="input-group">
+                        <input type="number" id="cifreDecimali" class="form-control" placeholder="Cifre decimali"
+                            value="0">
+                        <span class="input-group-text" onclick="document.getElementById('cifreDecimali').focus()"><i
+                                class="bi bi-123"></i></span>
+                    </div>
+                </a>
+
+            </li>
+            <li>
                 <hr class="dropdown-divider">
             </li>
             <li>
@@ -147,7 +158,7 @@
 
         <div class="row justify-content-center mt-3">
             <div class="col-md-6">
-                <h3>Numeri Generati:</h3>
+                <h3>Numeri Generati</h3>
                 <ul id="numerini" class="list-group"></ul>
             </div>
         </div>
@@ -172,7 +183,10 @@
                         onclick="aggiunginumeronibrutti()">Aggiungi</button>
                     </br>
 
-                    <h3 class="mt-2">Numeri Esclusi:</h3>
+                    <h3 class="mt-2">Numeri Esclusi <div class="float-end"><button type="button"
+                                class="btn btn-danger btn-sm" onclick="deleteAll(salvataggioCorrente)"><i
+                                    id="eliminaTuttoIcona" class="bi bi-x-lg"></i> Elimina tutto</button></div>
+                    </h3>
                     <div id="numeriBruttibruttiLista" class="d-flex flex-wrap gap-2"></div>
                 </div>
 
@@ -206,12 +220,32 @@
                     <button type="button" class="btn btn-primary mt-2" onclick="salvaSalvataggio()">Salva</button>
 
 
-                    <h3 class="mt-2">Salvataggi:</h3>
+                    <h3 class="mt-2">Salvataggi</h3>
                     <ul id="salvataggiLista" class="list-group"></ul>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalConfirm" tabindex="-1" aria-labelledby="modalConfirm" aria-hidden="true"
+        aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConfirmTitle">Sei sicuro?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalConfirmMessage">Message</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="modalNoBtn" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" id="modalYesBtn">Si</button>
                 </div>
             </div>
         </div>
@@ -231,6 +265,7 @@
     -->
 
     <script>
+        //Come faccio a fare tipo la funzione confirm ma con un modal di bootstrap
         function checkVuota(n) {
             return (n === undefined || n === null || n === "" || isNaN(n))
         }
@@ -244,7 +279,12 @@
             var quantitaNumeri = document.getElementById('quantitaNumeri').value;
             var minimo = parseInt(document.getElementById('minimo').value);
             var maksim = parseInt(document.getElementById('maksim').value);
+            var cifreDecimali = parseInt(document.getElementById('cifreDecimali').value);
             var numerini = document.getElementById('numerini');
+
+            if (checkVuota(cifreDecimali)) {
+                cifreDecimali = 0
+            }
 
             var quantitaNumeriDiv = document.getElementById('quantitaNumeriDiv')
             var minimoDiv = document.getElementById('minimoDiv')
@@ -281,12 +321,12 @@
             for (var i = 0; i < quantitaNumeri; i++) {
                 var numeroCasuale;
                 do {
-                    //if (true) { Forse nei prossimi update
-                    //    numeroCasuale = ((Math.random() * (maksim - minimo + 1)).toFixed(2) + minimo).toString()
-                    //    console.log(numeroCasuale)
+                    //if (cifreDecimali > 0) {// Forse nei prossimi update
+                    //    numeroCasuale = ((Math.random() * (maksim - minimo + 1)).toFixed(cifreDecimali - 1) + minimo).toString()
+//
                     //} else {
-                    numeroCasuale = Math.floor(Math.random() * (maksim - minimo + 1)) + minimo;
-                    // }
+                        numeroCasuale = Math.floor(Math.random() * (maksim - minimo + 1)) + minimo;
+                   // }
                 } while (numeriGenerati.includes(numeroCasuale) || numeriCattivi.includes(numeroCasuale));
 
                 numeriGenerati.push(numeroCasuale);
@@ -371,6 +411,24 @@
 
         }
 
+        async function deleteAll(salvataggio) {
+            const eliminaConfirm = await modalConfirm("Vuoi veramente eliminare i numeri registrati nel salvataggio?")
+            if (eliminaConfirm == true) {
+                for (var indexxxxx = numeriCattivi.length - 1; indexxxxx >= 0; indexxxxx--) {
+                    numeriCattivi.splice(indexxxxx, 1);
+                    document.getElementById('numeriBruttibruttiLista').removeChild(document.getElementById('numeriBruttibruttiLista').childNodes[indexxxxx]);
+                }
+
+                document.getElementById("eliminaTuttoIcona").className = "bi bi-check2"
+
+                setTimeout(function () {
+                    document.getElementById("eliminaTuttoIcona").className = "bi bi-x-lg"
+                }, 1000)
+            } else {
+                return
+            }
+        }
+
         function salvaSalvataggio(salvataggio, apriModal) {
             var nomeSalvataggio = salvataggio || document.getElementById('nomeSalvataggio').value;
             var nomeeeee = document.getElementById('nomeSalvataggio')
@@ -397,7 +455,7 @@
             if (salvataggio) document.getElementById("salvaicona" + salvataggio).className = "bi bi-check2"
             setTimeout(function () {
                 document.getElementById("salvaicona").className = "bi bi-download"
-                if (salvataggio)  document.getElementById("salvaicona" + salvataggio).className = "bi bi-upload"
+                if (salvataggio) document.getElementById("salvaicona" + salvataggio).className = "bi bi-upload"
             }, 1000)
 
 
@@ -448,6 +506,33 @@
                 toastBootstrap.show()
             }
         }
+
+        function modalConfirm(message) {
+            return new Promise((resolve, reject) => {
+                const modal = new bootstrap.Modal(document.getElementById('modalConfirm'));
+                document.getElementById('modalConfirmMessage').innerText = message;
+
+                document.getElementById('modalConfirm').addEventListener('hide.bs.modal', event => {
+                    resolve(false);
+                })
+
+                const yesBtn = document.getElementById('modalYesBtn');
+                const noBtn = document.getElementById('modalNoBtn');
+
+                yesBtn.onclick = () => {
+                    resolve(true);
+                    modal.hide();
+                };
+
+                noBtn.onclick = () => {
+                    resolve(false);
+                    modal.hide();
+                };
+
+                modal.show();
+            });
+        }
+
 
         function cambiaTema(tipoTema) {
             var itemTema = document.getElementById("itemTema")
