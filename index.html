@@ -50,20 +50,27 @@
             <i class="bi bi-gear"></i>&#8203;
         </button>
         <ul class="dropdown-menu mx-0 border-0 shadow w-220px" aria-labelledby="impostazioniDropdown">
+
+            <li>
+                <a class="dropdown-item" onclick="document.getElementById('cifreDecimali').focus()">
+                    <div class="input-group">
+                        <input type="number" id="cifreDecimali" class="form-control" placeholder="Cifre decimali"
+                            value="0" max="100" min="0">
+                        <span class="input-group-text" onclick="document.getElementById('cifreDecimali').focus()"><i
+                                class="bi bi-123"></i></span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
             <li>
                 <button class="dropdown-item d-flex gap-2 align-items-center" onclick="cambiaTema()"><i id="itemTema"
                         class="bi bi-sun-fill"></i> Cambia tema</button>
             </li>
             <li>
-                <a class="dropdown-item">
-                    <div class="input-group">
-                        <input type="number" id="cifreDecimali" class="form-control" placeholder="Cifre decimali"
-                            value="0">
-                        <span class="input-group-text" onclick="document.getElementById('cifreDecimali').focus()"><i
-                                class="bi bi-123"></i></span>
-                    </div>
-                </a>
-
+                <a class="dropdown-item d-flex gap-2 align-items-center" href="https://github.com/EXELVI/generatore" target="_blank"
+                    rel="noopener noreferrer"><i class="bi bi-github"></i> Github</a>
             </li>
             <li>
                 <hr class="dropdown-divider">
@@ -269,18 +276,28 @@
         function checkVuota(n) {
             return (n === undefined || n === null || n === "" || isNaN(n))
         }
+
+        function formatNumber(num) {
+            if (num % 1 === 0) {
+                return parseInt(num).toFixed(0);
+            } else {
+                return num;
+            }
+        }
+
         var numeriCattivi = [],
             salvataggi = {},
             salvataggioCorrente = "",
             salvataggiSettings = {};
 
 
-        function generaNumerettibelli() {
+        async function generaNumerettibelli() {
             var quantitaNumeri = document.getElementById('quantitaNumeri').value;
             var minimo = parseInt(document.getElementById('minimo').value);
             var maksim = parseInt(document.getElementById('maksim').value);
             var cifreDecimali = parseInt(document.getElementById('cifreDecimali').value);
             var numerini = document.getElementById('numerini');
+
 
             if (checkVuota(cifreDecimali)) {
                 cifreDecimali = 0
@@ -307,13 +324,22 @@
                 if (!checkVuota(quantitaNumeri)) quantitaNumeriDiv.className = ""
                 document.getElementById("valueError").hidden = true
             }
+
+            if (quantitaNumeri > 1000) {
+               const modallll = await modalConfirm("Sei sicuro di generare una quantità di numeri così grande? (Potrebbe metterci un po' di tempo e la pagina risulterà bloccata)")
+               if (!modallll) {
+                    return
+               }
+            }
+
             numerini.innerHTML = '';
 
-            if (((maksim - minimo + 1) - numeriCattivi.length) < quantitaNumeri) {
-                document.getElementById("valueError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> L'intervallo tra il massimo e il minimo non è sufficiente per generare la quantità richiesta di numeri.</p>"
-                return document.getElementById("valueError").hidden = false
+            var numPossibili = (maksim - minimo) * Math.pow(10, cifreDecimali) + 1;
+            if ((numPossibili - numeriCattivi.length) < quantitaNumeri) {
+                document.getElementById("valueError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> L'intervallo tra il massimo e il minimo non è sufficiente per generare la quantità richiesta di numeri.</p>";
+                return document.getElementById("valueError").hidden = false;
             } else {
-                document.getElementById("valueError").hidden = true
+                document.getElementById("valueError").hidden = true;
             }
 
             var numeriGenerati = [];
@@ -321,27 +347,28 @@
             for (var i = 0; i < quantitaNumeri; i++) {
                 var numeroCasuale;
                 do {
-                    //if (cifreDecimali > 0) {// Forse nei prossimi update
-                    //    numeroCasuale = ((Math.random() * (maksim - minimo + 1)).toFixed(cifreDecimali - 1) + minimo).toString()
-//
-                    //} else {
+                    if (cifreDecimali > 0) {
+
+                        numeroCasuale = formatNumber(((Math.random() * (maksim - minimo)) + (minimo)).toFixed(cifreDecimali)).toString()
+
+                    } else {
                         numeroCasuale = Math.floor(Math.random() * (maksim - minimo + 1)) + minimo;
-                   // }
+                    }
                 } while (numeriGenerati.includes(numeroCasuale) || numeriCattivi.includes(numeroCasuale));
 
                 numeriGenerati.push(numeroCasuale);
 
-
+                numeroCasuale = Number(numeroCasuale).toString()
 
 
                 var listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.appendChild(document.createTextNode(numeroCasuale));
-                listItem.innerHTML += '<a href="#" title="Aggiungi/Rimuovi ai numeri esclusi" onclick="toggleNumero(' + numeroCasuale + ')" id="botonNumero' + numeroCasuale + '" class="bi bi-x-circle-fill float-end text-end text-danger"></a>'
+                listItem.innerHTML += '<a href="#" title="Aggiungi/Rimuovi ai numeri esclusi" onclick="toggleNumero(' + numeroCasuale + ')" id="botonNumero' + String(numeroCasuale).replace(/\./g, "v").replace(/-/g, "m") + '" class="bi bi-x-circle-fill float-end text-end text-danger"></a>'
                 numerini.appendChild(listItem);
             }
             if (salvataggioCorrente) {
-                salvataggiSettings[salvataggioCorrente] = { quantitaNumeri: quantitaNumeri, minimo: minimo, massimo: maksim }
+                salvataggiSettings[salvataggioCorrente] = { quantitaNumeri: quantitaNumeri, minimo: minimo, massimo: maksim, cifreDecimali: cifreDecimali }
                 localStorage.setItem('settingsNew', JSON.stringify(salvataggiSettings));
             }
 
@@ -374,8 +401,8 @@
                 numeriBruttibruttiLista.appendChild(badge);
                 document.getElementById('numeronibrutti').value = '';
 
-
-                if (num) document.getElementById("botonNumero" + num).className = "bi bi-check2 float-end text-end text-danger"
+                console.log(String(num).replace(/\./g, "v").replace(/-/g, "m"), num)
+                if (num) document.getElementById("botonNumero" + String(num).replace(/\./g, "v").replace(/-/g, "m")).className = "bi bi-check2 float-end text-end text-danger"
 
             } else {
                 document.getElementById("escludiError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Questo numero è già stato escluso</p>"
@@ -490,7 +517,7 @@
             if (indexxxxx !== -1) {
                 numeriCattivi.splice(indexxxxx, 1);
                 document.getElementById('numeriBruttibruttiLista').removeChild(document.getElementById('numeriBruttibruttiLista').childNodes[indexxxxx]);
-                if (toggle) document.getElementById("botonNumero" + numero).className = "bi bi-x-circle-fill float-end text-end text-danger"
+                if (toggle) document.getElementById("botonNumero" + String(numero).replace(/\./g, "v").replace(/-/g, "m")).className = "bi bi-x-circle-fill float-end text-end text-danger"
             } else {
                 var localStorageData = {};
                 if (localStorage.length > 0) {
@@ -580,6 +607,7 @@
             if (settingsNew) {
                 salvataggiSettings = settingsNew
                 if (settingsNew[selectedSave]) {
+                    document.getElementById('cifreDecimali').value = settingsNew[selectedSave]?.cifreDecimali
                     document.getElementById('quantitaNumeri').value = settingsNew[selectedSave]?.quantitaNumeri
                     document.getElementById('minimo').value = settingsNew[selectedSave]?.minimo
                     document.getElementById('maksim').value = settingsNew[selectedSave]?.massimo
