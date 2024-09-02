@@ -2,9 +2,7 @@
 
 ![Screenshot del Progetto](https://exelvi.github.io/img/Screenshot_25-3-2024_12449_exelvi.github.io.jpeg)
 
-![Project Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-v5.3.2-orange?style=for-the-badge)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-v5.3.3-orange?style=for-the-badge)
 ![Issues](https://img.shields.io/github/issues/EXELVI/generatore?style=for-the-badge)
 ![Pull Requests](https://img.shields.io/github/issues-pr/EXELVI/generatore?style=for-the-badge)
 
