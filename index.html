@@ -69,8 +69,9 @@
                         class="bi bi-sun-fill"></i> Cambia tema</button>
             </li>
             <li>
-                <a class="dropdown-item d-flex gap-2 align-items-center" href="https://github.com/EXELVI/generatore" target="_blank"
-                    rel="noopener noreferrer"><i class="bi bi-github"></i> Github<i style="transform: scale(0.7);" class="bi bi-box-arrow-up-right"></i></a>
+                <a class="dropdown-item d-flex gap-2 align-items-center" href="https://github.com/EXELVI/generatore"
+                    target="_blank" rel="noopener noreferrer"><i class="bi bi-github"></i> Github<i
+                        style="transform: scale(0.7);" class="bi bi-box-arrow-up-right"></i></a>
             </li>
             <li>
                 <hr class="dropdown-divider">
@@ -241,7 +242,7 @@
 
     <div class="modal fade" id="modalConfirm" tabindex="-1" aria-labelledby="modalConfirm" aria-hidden="true"
         aria-modal="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalConfirmTitle">Sei sicuro?</h5>
@@ -326,10 +327,10 @@
             }
 
             if (quantitaNumeri > 1000) {
-               const modallll = await modalConfirm("Sei sicuro di generare una quantità di numeri così grande? (Potrebbe metterci un po' di tempo e la pagina risulterà bloccata)")
-               if (!modallll) {
+                const modallll = await modalConfirm("Sei sicuro di generare una quantità di numeri così grande? (Potrebbe metterci un po' di tempo e la pagina risulterà bloccata)")
+                if (!modallll) {
                     return
-               }
+                }
             }
 
             numerini.innerHTML = '';
@@ -431,7 +432,7 @@
                 var listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.appendChild(document.createTextNode(keys[i]));
-                listItem.innerHTML = '<a style="cursor: pointer;" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + (questo ? "<strong>" : "") + listItem.innerHTML + (questo ? "</strong>" : "") + '<div class="float-end"><button type="button" class="btn btn-primary" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i id="caricaicona' + keys[i] + '" class="bi bi-upload"></i> Carica</button> <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(\'' + keys[i] + '\')"><i id="salvaicona' + keys[i] + '" class="bi bi-download"></i> Salva</button></div>'
+                listItem.innerHTML = '<a style="cursor: pointer;" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + listItem.innerHTML + (questo ? " <span class=\"badge text-bg-primary\">In uso</span>" : "") + '<div class="float-end"><button type="button" class="btn btn-primary" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i id="caricaicona' + keys[i] + '" class="bi bi-upload"></i> Carica</button> <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(\'' + keys[i] + '\')"><i id="salvaicona' + keys[i] + '" class="bi bi-download"></i> Salva</button></div>'
                 salvataggiLista.appendChild(listItem);
 
             }
@@ -456,7 +457,7 @@
             }
         }
 
-        function salvaSalvataggio(salvataggio, apriModal) {
+        async function salvaSalvataggio(salvataggio, apriModal) {
             var nomeSalvataggio = salvataggio || document.getElementById('nomeSalvataggio').value;
             var nomeeeee = document.getElementById('nomeSalvataggio')
             if (!salvataggio && apriModal) {
@@ -465,11 +466,19 @@
 
             }
             else if (!nomeSalvataggio) {
-
                 document.getElementById("salvaError").innerHTML = "<i class=\"bi bi-exclamation-circle-fill\"></i> Inserisci un nome</p>"
                 return document.getElementById("salvaError").hidden = false
             } else {
                 document.getElementById("salvaError").hidden = true
+            }
+
+            //Se ci sono numeri esclusi, il salvataggio NON esiste: chiede se vuole creare un salvataggio vuoto o con i numeri esclusi
+            if (!Object.keys(salvataggi).includes(nomeSalvataggio) && numeriCattivi.length > 0) {
+                const modallll = await modalConfirm("Hai dei numeri esclusi, vuoi crearne un salvataggio vuoto? [Si] (o vuoi crearne uno con i numeri già esclusi [No]?)")
+                if (modallll) {
+                    numeriCattivi = []
+                    visualizzaNumeriEsclusi()
+                }
 
             }
 
@@ -484,8 +493,6 @@
                 document.getElementById("salvaicona").className = "bi bi-download"
                 if (salvataggio) document.getElementById("salvaicona" + salvataggio).className = "bi bi-upload"
             }, 1000)
-
-
 
         }
 
