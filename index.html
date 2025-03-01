@@ -35,6 +35,96 @@
             y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
         })(window, document, "clarity", "script", "kw5h4v8a6d");
     </script>
+    <style>
+        .app {
+            font-family: 'Courier New', Courier, monospace;
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2d2d2d;
+            width: 100%;
+            height: 30px;
+            padding: 0 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            cursor: grab;
+        }
+
+        .top-bar:active {
+            cursor: grabbing;
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .buttons span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .close {
+            background-color: #ff5f56;
+        }
+
+        .minimize {
+            background-color: #ffbd2e;
+        }
+
+        .zoom {
+            background-color: #27c93f;
+        }
+
+        .actionbuttons {
+            margin-left: auto;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+
+        .action-button {
+            cursor: pointer;
+            padding-right: 6px;
+        }
+
+
+        .title {
+            color: #bbb;
+            font-size: 14px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: calc(100% - 30px);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 
 
     <!--Ho usato bootstrap per lo style-->
@@ -44,6 +134,31 @@
 </head>
 
 <body>
+    <div class="app" id="wiki-window" style="display: none;">
+        <div class="top-bar" id="top-bar" draggable="true">
+            <div class="buttons">
+                <span id="close" class="close"></span>
+                <span id="minimize" class="minimize"></span>
+                <span id="zoom" class="zoom"></span>
+            </div>
+            <div class="actionbuttons">
+                <div id="reload" class="action-button">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </div>
+
+                <div id="openInNewTab" class="action-button">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+            </div>
+            <div class="title" id="bar-title">Guida</div>
+        </div>
+
+        <div class="iframe-container" id="iframe-body">
+            <iframe id="wiki-frame" src="/wiki.html" frameborder="0"></iframe>
+        </div>
+    </div>
+
+
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="impostazioniDropdown"
             data-bs-toggle="dropdown" aria-expanded="false">
@@ -67,6 +182,10 @@
             <li>
                 <button class="dropdown-item d-flex gap-2 align-items-center" onclick="cambiaTema()"><i id="itemTema"
                         class="bi bi-sun-fill"></i> Cambia tema</button>
+            </li>
+            <li>
+                <button class="dropdown-item d-flex gap-2 align-items-center" onclick="helpWindow()"><i id="helpWindow"
+                        class="bi bi-question-circle-fill"></i> Guida</button>
             </li>
             <li>
                 <a class="dropdown-item d-flex gap-2 align-items-center" href="https://github.com/EXELVI/generatore"
@@ -634,9 +753,114 @@
                 visualizzaSalvataggi()
             }
         }
+
+        function helpWindow() {
+            var wikiWindow = document.getElementById('wiki-window');
+            if (wikiWindow.style.display === 'none') {
+                wikiWindow.style.display = 'block';
+            } else {
+                wikiWindow.style.display = 'none';
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', function () {
             setSettings()
+
+         
+            
+
+            let isDragging = false;
+            let offsetX, offsetY;
+            const wikiWindow = document.getElementById('wiki-window');
+            const topBar = document.getElementById('top-bar');
+            const iframeBody = document.getElementById('iframe-body');
+            const minimizeButton = document.getElementById('minimize');
+            const closeButton = document.getElementById('close');
+            const zoomButton = document.getElementById('zoom');
+
+            topBar.addEventListener('dragstart', (e) => {
+                if (wikiWindow.style.width !== '100%') {
+                    isDragging = true;
+                    offsetX = e.clientX - wikiWindow.offsetLeft;
+                    offsetY = e.clientY - wikiWindow.offsetTop;
+                }
+            });
+
+            document.addEventListener('dragover', (e) => {
+                if (isDragging) {
+                    e.preventDefault();
+                    const x = e.clientX - offsetX;
+                    const y = e.clientY - offsetY;
+                    wikiWindow.style.left = `${x}px`;
+                    wikiWindow.style.top = `${y}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                topBar.style.cursor = 'grab';
+            });
+
+            minimizeButton.addEventListener('click', function () {
+                if (iframeBody.style.display !== 'none') {
+                    iframeBody.style.display = 'none';
+                    topBar.style.borderBottomRightRadius = "5px";
+                    topBar.style.borderBottomLeftRadius = "5px";
+                    topBar.style.borderTopRightRadius = "5px";
+                    topBar.style.borderTopLeftRadius = "5px";
+                    topBar.style.width = "200px";
+                } else {
+                    iframeBody.style.display = 'block';
+                    topBar.style.borderBottomRightRadius = "0";
+                    topBar.style.borderBottomLeftRadius = "0";
+                    if (wikiWindow.style.width == '100%') {
+                        topBar.style.width = "100%";
+                    } else {
+                        topBar.style.width = "100%";
+                    }
+                }
+            });
+
+
+            closeButton.addEventListener('click', function () {
+                wikiWindow.style.display = 'none';
+            });
+
+            zoomButton.addEventListener('click', function () {
+                if (iframeBody.style.display === 'none') {
+                    iframeBody.style.display = 'block';
+                    topBar.style.borderRadius = '0';
+                }
+                if (wikiWindow.style.width === '100%') {
+                    wikiWindow.style.width = '80%';
+                    wikiWindow.style.height = '80%';
+                    wikiWindow.style.left = '10%';
+                    wikiWindow.style.top = '10%';
+                    topBar.style.borderRadius = '5px';
+                    topBar.style.width = '100%';
+                    wikiWindow.style.maxWidth = '800px';
+                    topBar.style.cursor = 'grab';
+                } else {
+                    wikiWindow.style.width = '100%';
+                    wikiWindow.style.height = '100%';
+                    wikiWindow.style.left = '0';
+                    wikiWindow.style.top = '0';
+                    topBar.style.width = '100%';
+                    topBar.style.borderRadius = '0';
+                    wikiWindow.style.maxWidth = 'none';
+                    wikiWindow.style.left = '0px';
+                    wikiWindow.style.top = '0px';
+                    topBar.style.cursor = 'default';
+                }
+                //iframe actions buttons
+                document.getElementById('reload').addEventListener('click', () => document.getElementById('wiki-frame').contentWindow.location.reload());
+                document.getElementById('openInNewTab').addEventListener('click', () => window.open(document.getElementById('wiki-frame').src, '_blank'));
+
+            });
+
         });
+
+
 
         function copyCode() {
             const codeContent = document.getElementById('code-content');
@@ -652,6 +876,8 @@
                 document.getElementById("bottoneErrorCopia").className = "bi bi-clipboard"
             }, 1000)
         }
+
+
 
 
     </script>
