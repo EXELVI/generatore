@@ -378,6 +378,39 @@
         </div>
     </div>
 
+    <div id="modalChangelog" class="modal fade modal-sheet" tabindex="-1" aria-labelledby="modalChangelogLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-body p-5">
+                    <h1 class="fw-bold mb-0">Cos'è nuovo?</h1>
+                    <ul class="d-grid gap-4 my-5 list-unstyled small">
+                        <li class="d-flex gap-4">
+                            <i class="bi bi-book flex-shrink-0 text-primary" style="font-size: 2rem;"></i>
+                            <div>
+                                <h4 class="fw-bold mb-0">
+                                   Guida all'uso
+                                </h4>
+                                <p class="mb-0">Ora è possibile consultare una guida per l'uso del generatore di numeri
+                                    casuali.</p>
+                            </div>
+                        </li>
+                        <li class="d-flex gap-4">
+                            <i class="bi bi-question-circle flex-shrink-0 text-warning" style="font-size: 2rem;"></i>
+                            <div>
+                                <h4 class="fw-bold mb-0">
+                                    Conferma salvataggio vuoto
+                                </h4>
+                                <p class="mb-0">Ora verrà chiesto se si vuole includere i numeri esclusi nel salvataggio o se crearlo vuoto.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <button type="button" class="btn btn-lg btn-primary mt-5 w-100" data-bs-dismiss="modal">Va bene!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -762,21 +795,23 @@
                 wikiWindow.style.display = 'none';
             }
         }
-        
+
         document.addEventListener('DOMContentLoaded', function () {
             setSettings()
 
 
-            let thisUpdate = "38" 
+            let thisUpdate = "39"
 
             //show changelog system
             let storageChangeLog = localStorage.getItem('version');
             if (storageChangeLog != thisUpdate) {
                 localStorage.setItem('version', thisUpdate);
-                //todo
+                const modalChangelog = new bootstrap.Modal(document.getElementById('modalChangelog'));
+                modalChangelog.show();
+
             }
-         
-            
+
+
 
             let isDragging = false;
             let offsetX, offsetY;
