@@ -389,7 +389,7 @@
                             <i class="bi bi-book flex-shrink-0 text-primary" style="font-size: 2rem;"></i>
                             <div>
                                 <h4 class="fw-bold mb-0">
-                                   Guida all'uso
+                                    Guida all'uso
                                 </h4>
                                 <p class="mb-0">Ora è possibile consultare una guida per l'uso del generatore di numeri
                                     casuali.</p>
@@ -401,11 +401,13 @@
                                 <h4 class="fw-bold mb-0">
                                     Conferma salvataggio vuoto
                                 </h4>
-                                <p class="mb-0">Ora verrà chiesto se si vuole includere i numeri esclusi nel salvataggio o se crearlo vuoto.</p>
+                                <p class="mb-0">Ora verrà chiesto se si vuole includere i numeri esclusi nel salvataggio
+                                    o se crearlo vuoto.</p>
                             </div>
                         </li>
                     </ul>
-                    <button type="button" class="btn btn-lg btn-primary mt-5 w-100" data-bs-dismiss="modal">Va bene!</button>
+                    <button type="button" class="btn btn-lg btn-primary mt-5 w-100" data-bs-dismiss="modal">Va
+                        bene!</button>
                 </div>
             </div>
         </div>
@@ -896,12 +898,11 @@
                     wikiWindow.style.top = '0px';
                     topBar.style.cursor = 'default';
                 }
-                //iframe actions buttons
-                document.getElementById('reload').addEventListener('click', () => document.getElementById('wiki-frame').contentWindow.location.reload());
-                document.getElementById('openInNewTab').addEventListener('click', () => window.open(document.getElementById('wiki-frame').src, '_blank'));
 
             });
 
+            document.getElementById('reload').addEventListener('click', () => document.getElementById('wiki-frame').contentWindow.location.reload());
+            document.getElementById('openInNewTab').addEventListener('click', () => window.open(document.getElementById('wiki-frame').src, '_blank'));
         });
 
 
