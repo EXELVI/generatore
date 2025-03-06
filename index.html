@@ -154,7 +154,7 @@
         </div>
 
         <div class="iframe-container" id="iframe-body">
-            <iframe id="wiki-frame" src="/wiki.html" frameborder="0"></iframe>
+            <iframe id="wiki-frame" src="/generatore/wiki" frameborder="0"></iframe>
         </div>
     </div>
 
@@ -766,6 +766,15 @@
         document.addEventListener('DOMContentLoaded', function () {
             setSettings()
 
+
+            let thisUpdate = "38" 
+
+            //show changelog system
+            let storageChangeLog = localStorage.getItem('version');
+            if (storageChangeLog != thisUpdate) {
+                localStorage.setItem('version', thisUpdate);
+                //todo
+            }
          
             
 
