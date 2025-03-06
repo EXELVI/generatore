@@ -47,7 +47,9 @@
             overflow: hidden;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 100;           
+            border-radius: 5px;
+            box-shadow: 6px 6px 6px 0 rgba(102, 126, 234, 0.3), -2px -2px 2px 0 rgba(118, 75, 162, 0.3);
         }
 
         .top-bar {
@@ -143,18 +145,18 @@
             </div>
             <div class="actionbuttons">
                 <div id="reload" class="action-button">
-                    <i class="bi bi-arrow-clockwise"></i>
+                    <i class="bi bi-arrow-clockwise text-white"></i>
                 </div>
 
                 <div id="openInNewTab" class="action-button">
-                    <i class="bi bi-box-arrow-up-right"></i>
+                    <i class="bi bi-box-arrow-up-right text-white"></i>
                 </div>
             </div>
             <div class="title" id="bar-title">Guida</div>
         </div>
 
         <div class="iframe-container" id="iframe-body">
-            <iframe id="wiki-frame" src="/generatore/wiki" frameborder="0"></iframe>
+            <iframe id="wiki-frame" src="/generatore/wiki.html" frameborder="0"></iframe>
         </div>
     </div>
 
@@ -855,10 +857,14 @@
                     topBar.style.borderTopRightRadius = "5px";
                     topBar.style.borderTopLeftRadius = "5px";
                     topBar.style.width = "200px";
+                    wikiWindow.style.width = '200px';
+                    wikiWindow.style.height = '30px';
                 } else {
                     iframeBody.style.display = 'block';
                     topBar.style.borderBottomRightRadius = "0";
                     topBar.style.borderBottomLeftRadius = "0";
+                    wikiWindow.style.width = '80%';
+                    wikiWindow.style.height = '80%';
                     if (wikiWindow.style.width == '100%') {
                         topBar.style.width = "100%";
                     } else {
