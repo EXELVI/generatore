@@ -346,7 +346,8 @@
                         placeholder="Inserisci nome salvataggio"
                         onkeydown="if(event.key == 'Enter') { event.preventDefault(); salvaSalvataggio(); }">
 
-                    <button type="button" class="btn btn-primary mt-2" onclick="salvaSalvataggio()">Salva</button>
+                    <button type="button" class="btn btn-primary mt-2" onclick="salvaSalvataggio()">Crea</button>
+                    <button type="button" class="btn btn-secondary mt-2" onclick="salvaSalvataggio(null, false, true)">Crea vuoto</button>
 
 
                     <h3 class="mt-2">Salvataggi</h3>
@@ -401,10 +402,9 @@
                             <i class="bi bi-question-circle flex-shrink-0 text-warning" style="font-size: 2rem;"></i>
                             <div>
                                 <h4 class="fw-bold mb-0">
-                                    Conferma salvataggio vuoto
+                                     Indicatore delle impostazioni salvataggio
                                 </h4>
-                                <p class="mb-0">Ora verrà chiesto se si vuole includere i numeri esclusi nel salvataggio
-                                    o se crearlo vuoto.</p>
+                                <p class="mb-0">Ora è possibile vedere il da, a di fianco al nome del salvataggio.</p>
                             </div>
                         </li>
                     </ul>
@@ -588,7 +588,7 @@
                 var listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.appendChild(document.createTextNode(keys[i]));
-                listItem.innerHTML = '<a style="cursor: pointer;" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + listItem.innerHTML + (questo ? " <span class=\"badge text-bg-primary\">In uso</span>" : "") + '<div class="float-end"><button type="button" class="btn btn-primary" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i id="caricaicona' + keys[i] + '" class="bi bi-upload"></i> Carica</button> <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(\'' + keys[i] + '\')"><i id="salvaicona' + keys[i] + '" class="bi bi-download"></i> Salva</button></div>'
+                listItem.innerHTML = '<a style="cursor: pointer;" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + listItem.innerHTML + (questo ? " <span class=\"badge text-bg-primary\">In uso</span>" : "") + (salvataggiSettings[keys[i]] ? ' <span class=\"badge text-bg-secondary\">Da ' + salvataggiSettings[keys[i]].minimo + ' a ' + salvataggiSettings[keys[i]].massimo+ '</span>' : "") + '<div class="float-end"><button type="button" class="btn btn-primary" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i id="caricaicona' + keys[i] + '" class="bi bi-upload"></i> Carica</button> <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(\'' + keys[i] + '\')"><i id="salvaicona' + keys[i] + '" class="bi bi-download"></i> Salva</button></div>'
                 salvataggiLista.appendChild(listItem);
 
             }
@@ -613,7 +613,7 @@
             }
         }
 
-        async function salvaSalvataggio(salvataggio, apriModal) {
+        async function salvaSalvataggio(salvataggio, apriModal, vuoto) {
             var nomeSalvataggio = salvataggio || document.getElementById('nomeSalvataggio').value;
             var nomeeeee = document.getElementById('nomeSalvataggio')
             if (!salvataggio && apriModal) {
@@ -630,12 +630,10 @@
 
             //Se ci sono numeri esclusi, il salvataggio NON esiste: chiede se vuole creare un salvataggio vuoto o con i numeri esclusi
             if (!Object.keys(salvataggi).includes(nomeSalvataggio) && numeriCattivi.length > 0) {
-                const modallll = await modalConfirm("Hai dei numeri esclusi, vuoi crearne un salvataggio vuoto? [Si] (o vuoi crearne uno con i numeri già esclusi [No]?)")
-                if (modallll) {
+                if (vuoto) {
                     numeriCattivi = []
                     visualizzaNumeriEsclusi()
                 }
-
             }
 
             salvataggi[nomeSalvataggio] = numeriCattivi
@@ -804,7 +802,7 @@
             setSettings()
 
 
-            let thisUpdate = "39"
+            let thisUpdate = "40"
 
             //show changelog system
             let storageChangeLog = localStorage.getItem('version');
