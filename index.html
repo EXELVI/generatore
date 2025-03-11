@@ -47,7 +47,7 @@
             overflow: hidden;
             align-items: center;
             justify-content: center;
-            z-index: 100;           
+            z-index: 100;
             border-radius: 5px;
             box-shadow: 6px 6px 6px 0 rgba(102, 126, 234, 0.3), -2px -2px 2px 0 rgba(118, 75, 162, 0.3);
         }
@@ -135,7 +135,7 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 
-<body>
+<body data-clarity-unmask="true">
     <div class="app" id="wiki-window" style="display: none;">
         <div class="top-bar" id="top-bar" draggable="true">
             <div class="buttons">
@@ -218,7 +218,7 @@
                 Per favore apri un <a href="https://github.com/EXELVI/generatore/issues/new" target="_blank"
                     rel="noopener noreferrer">issue su Github</a> riportando i dati qua sotto:
 
-                <div class="container-fluid">
+                <div class="container-fluid" data-clarity-unmask="true">
                     <div class="row">
                         <div class="col">
                             <div class="codebox border p-3 mb-3">
@@ -236,7 +236,7 @@
     </div>
 
 
-    <div class="container-fluid">
+    <div class="container-fluid" data-clarity-unmask="true">
 
         <h1 class="text-center">Generatore di Numeri Casuali</h1>
 
@@ -247,7 +247,7 @@
                     i valori</p>
                 <div id="quantitaNumeriDiv">
                     <label for="quantitaNumeri">Quantità di Numeri:</label>
-                    <div class="input-group">
+                    <div class="input-group" data-clarity-unmask="true">
                         <input type="number" id="quantitaNumeri" class="form-control" min="1" value="5">
                         <span class="input-group-text" onclick="document.getElementById('quantitaNumeri').focus()"><i
                                 class="bi bi-list-ol"></i></span>
@@ -256,7 +256,8 @@
                 <div id="minimoDiv">
                     <label for="minimo">Da:</label>
                     <div class="input-group">
-                        <input type="number" id="minimo" class="form-control" placeholder="Da" value="1">
+                        <input type="number" id="minimo" class="form-control" placeholder="Da" value="1"
+                            data-clarity-unmask="true">
                         <span class="input-group-text" onclick="document.getElementById('minimo').focus()"><i
                                 class="bi bi-arrow-bar-right"></i></span>
                     </div>
@@ -347,7 +348,8 @@
                         onkeydown="if(event.key == 'Enter') { event.preventDefault(); salvaSalvataggio(); }">
 
                     <button type="button" class="btn btn-primary mt-2" onclick="salvaSalvataggio()">Crea</button>
-                    <button type="button" class="btn btn-secondary mt-2" onclick="salvaSalvataggio(null, false, true)">Crea vuoto</button>
+                    <button type="button" class="btn btn-secondary mt-2"
+                        onclick="salvaSalvataggio(null, false, true)">Crea vuoto</button>
 
 
                     <h3 class="mt-2">Salvataggi</h3>
@@ -402,7 +404,7 @@
                             <i class="bi bi-question-circle flex-shrink-0 text-warning" style="font-size: 2rem;"></i>
                             <div>
                                 <h4 class="fw-bold mb-0">
-                                     Indicatore delle impostazioni salvataggio
+                                    Indicatore delle impostazioni salvataggio
                                 </h4>
                                 <p class="mb-0">Ora è possibile vedere il da, a di fianco al nome del salvataggio.</p>
                             </div>
@@ -588,7 +590,7 @@
                 var listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.appendChild(document.createTextNode(keys[i]));
-                listItem.innerHTML = '<a style="cursor: pointer;" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + listItem.innerHTML + (questo ? " <span class=\"badge text-bg-primary\">In uso</span>" : "") + (salvataggiSettings[keys[i]] ? ' <span class=\"badge text-bg-secondary\">Da ' + salvataggiSettings[keys[i]].minimo + ' a ' + salvataggiSettings[keys[i]].massimo+ '</span>' : "") + '<div class="float-end"><button type="button" class="btn btn-primary" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i id="caricaicona' + keys[i] + '" class="bi bi-upload"></i> Carica</button> <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(\'' + keys[i] + '\')"><i id="salvaicona' + keys[i] + '" class="bi bi-download"></i> Salva</button></div>'
+                listItem.innerHTML = '<a style="cursor: pointer;" onclick="rimuoviSalvattaggio(\'' + keys[i] + '\')" class="bi bi-x-circle-fill text-end text-danger"></a> ' + listItem.innerHTML + (questo ? " <span class=\"badge text-bg-primary\">In uso</span>" : "") + (salvataggiSettings[keys[i]] ? ' <span class=\"badge text-bg-secondary\">Da ' + salvataggiSettings[keys[i]].minimo + ' a ' + salvataggiSettings[keys[i]].massimo + '</span>' : "") + '<div class="float-end"><button type="button" class="btn btn-primary" onclick="caricaSalvataggio(\'' + keys[i] + '\')"><i id="caricaicona' + keys[i] + '" class="bi bi-upload"></i> Carica</button> <button type="button" class="btn btn-primary" onclick="salvaSalvataggio(\'' + keys[i] + '\')"><i id="salvaicona' + keys[i] + '" class="bi bi-download"></i> Salva</button></div>'
                 salvataggiLista.appendChild(listItem);
 
             }
@@ -688,7 +690,15 @@
                         localStorageData[key] = value;
                     }
                 }
-                document.getElementById("code-content").innerText = JSON.stringify(localStorageData, null, 3)
+    
+                let storageToInclude = [
+                    "settingsNew", "numeriEsclusiNew", "selectedSave", "tema", "numeriEsclusi", "version"
+                ]
+    
+                document.getElementById("code-content").innerText = JSON.stringify(Object.keys(localStorageData).filter((key) => storageToInclude.includes(key)).reduce((acc, k) => {
+                    acc[k] = localStorageData[k];
+                    return acc;
+                }, {}), null, 2)
                 const errorToast = document.getElementById('errorToast')
                 const toastBootstrap = bootstrap.Toast.getOrCreateInstance(errorToast)
                 toastBootstrap.show()
