@@ -167,7 +167,12 @@
             <i class="bi bi-gear"></i>&#8203;
         </button>
         <ul class="dropdown-menu mx-0 border-0 shadow w-220px" aria-labelledby="impostazioniDropdown">
-
+            <li>
+                <a class="dropdown-item" href="https://exelvi.xyz/generatore"><i class="bi bi-box-arrow-in-up-right"></i> Prova la
+                    nuova versione</a>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
             <li>
                 <a class="dropdown-item" onclick="document.getElementById('cifreDecimali').focus()">
                     <div class="input-group">
@@ -390,7 +395,7 @@
                 <div class="modal-body p-5">
                     <h1 class="fw-bold mb-0">Cos'è nuovo?</h1>
                     <ul class="d-grid gap-4 my-5 list-unstyled small">
-                        <li class="d-flex gap-4">
+                       <!-- <li class="d-flex gap-4">
                             <i class="bi bi-book flex-shrink-0 text-primary" style="font-size: 2rem;"></i>
                             <div>
                                 <h4 class="fw-bold mb-0">
@@ -408,6 +413,18 @@
                                 </h4>
                                 <p class="mb-0">Ora è possibile vedere il da, a di fianco al nome del salvataggio.</p>
                             </div>
+                        </li>-->
+                        <!-- Nuova versione https://exelvi.xyz/generatore -->
+                        <li class="d-flex gap-4">
+                            <i class="bi bi-box-arrow-up-right flex-shrink-0 text-success" style="font-size: 2rem;"></i>
+                            <div>
+                                <h4 class="fw-bold mb-0">
+                                    Nuova versione disponibile!
+                                </h4>
+                                <p class="mb-0">È stata rilasciata una nuova versione del generatore di numeri casuali.
+                                    Clicca sul link nelle impostazioni per provarla!
+                                O premi <a href="https://exelvi.xyz/generatore">qui</a>.</p>
+                            </div>  
                         </li>
                     </ul>
                     <button type="button" class="btn btn-lg btn-primary mt-5 w-100" data-bs-dismiss="modal">Va
@@ -430,8 +447,7 @@
     Github: https://github.com/EXELVI
     -->
 
-    <script>
-        //Come faccio a fare tipo la funzione confirm ma con un modal di bootstrap
+    <script> 
         function checkVuota(n) {
             return (n === undefined || n === null || n === "" || isNaN(n))
         }
@@ -812,11 +828,11 @@
             setSettings()
 
 
-            let thisUpdate = "40"
+            let thisUpdate = "42"
 
-            //show changelog system
+            //changelogs modal
             let storageChangeLog = localStorage.getItem('version');
-            if (storageChangeLog != thisUpdate) {
+            if (storageChangeLog && (storageChangeLog != thisUpdate)) {
                 localStorage.setItem('version', thisUpdate);
                 const modalChangelog = new bootstrap.Modal(document.getElementById('modalChangelog'));
                 modalChangelog.show();
